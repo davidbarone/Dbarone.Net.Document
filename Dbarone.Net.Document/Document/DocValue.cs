@@ -381,9 +381,9 @@ namespace Dbarone.Net.Document
         }
 
         // -
-        public static BsonValue operator -(BsonValue left, BsonValue right)
+        public static DocValue operator -(DocValue left, DocValue right)
         {
-            if (!left.IsNumber || !right.IsNumber) return BsonValue.Null;
+            if (!left.IsNumber || !right.IsNumber) return DocValue.Null;
 
             if (left.IsInt32 && right.IsInt32) return left.AsInt32 - right.AsInt32;
             if (left.IsInt64 && right.IsInt64) return left.AsInt64 - right.AsInt64;
@@ -391,18 +391,18 @@ namespace Dbarone.Net.Document
             if (left.IsDecimal && right.IsDecimal) return left.AsDecimal - right.AsDecimal;
 
             var result = left.AsDecimal - right.AsDecimal;
-            var type = (BsonType)Math.Max((int)left.Type, (int)right.Type);
+            var type = (DocType)Math.Max((int)left.Type, (int)right.Type);
 
             return
-                type == BsonType.Int64 ? new BsonValue((Int64)result) :
-                type == BsonType.Double ? new BsonValue((Double)result) :
-                new BsonValue(result);
+                type == DocType.Int64 ? new DocValue((Int64)result) :
+                type == DocType.Double ? new DocValue((Double)result) :
+                new DocValue(result);
         }
 
         // *
-        public static BsonValue operator *(BsonValue left, BsonValue right)
+        public static DocValue operator *(DocValue left, DocValue right)
         {
-            if (!left.IsNumber || !right.IsNumber) return BsonValue.Null;
+            if (!left.IsNumber || !right.IsNumber) return DocValue.Null;
 
             if (left.IsInt32 && right.IsInt32) return left.AsInt32 * right.AsInt32;
             if (left.IsInt64 && right.IsInt64) return left.AsInt64 * right.AsInt64;
@@ -410,18 +410,18 @@ namespace Dbarone.Net.Document
             if (left.IsDecimal && right.IsDecimal) return left.AsDecimal * right.AsDecimal;
 
             var result = left.AsDecimal * right.AsDecimal;
-            var type = (BsonType)Math.Max((int)left.Type, (int)right.Type);
+            var type = (DocType)Math.Max((int)left.Type, (int)right.Type);
 
             return
-                type == BsonType.Int64 ? new BsonValue((Int64)result) :
-                type == BsonType.Double ? new BsonValue((Double)result) :
-                new BsonValue(result);
+                type == DocType.Int64 ? new DocValue((Int64)result) :
+                type == DocType.Double ? new DocValue((Double)result) :
+                new DocValue(result);
         }
 
         // /
-        public static BsonValue operator /(BsonValue left, BsonValue right)
+        public static DocValue operator /(DocValue left, DocValue right)
         {
-            if (!left.IsNumber || !right.IsNumber) return BsonValue.Null;
+            if (!left.IsNumber || !right.IsNumber) return DocValue.Null;
             if (left.IsDecimal || right.IsDecimal) return left.AsDecimal / right.AsDecimal;
 
             return left.AsDouble / right.AsDouble;
@@ -436,12 +436,12 @@ namespace Dbarone.Net.Document
 
         #region IComparable<BsonValue>, IEquatable<BsonValue>
 
-        public virtual int CompareTo(BsonValue other)
+        public virtual int CompareTo(DocValue other)
         {
             return this.CompareTo(other, Collation.Binary);
         }
 
-        public virtual int CompareTo(BsonValue other, Collation collation)
+        public virtual int CompareTo(DocValue other, Collation collation)
         {
             // first, test if types are different
             if (this.Type != other.Type)
@@ -463,27 +463,26 @@ namespace Dbarone.Net.Document
             // for both values with same data type just compare
             switch (this.Type)
             {
-                case BsonType.Null:
-                case BsonType.MinValue:
-                case BsonType.MaxValue:
+                case DocType.Null:
+                case DocType.MinValue:
+                case DocType.MaxValue:
                     return 0;
 
-                case BsonType.Int32: return this.AsInt32.CompareTo(other.AsInt32);
-                case BsonType.Int64: return this.AsInt64.CompareTo(other.AsInt64);
-                case BsonType.Double: return this.AsDouble.CompareTo(other.AsDouble);
-                case BsonType.Decimal: return this.AsDecimal.CompareTo(other.AsDecimal);
+                case DocType.Int32: return this.AsInt32.CompareTo(other.AsInt32);
+                case DocType.Int64: return this.AsInt64.CompareTo(other.AsInt64);
+                case DocType.Double: return this.AsDouble.CompareTo(other.AsDouble);
+                case DocType.Decimal: return this.AsDecimal.CompareTo(other.AsDecimal);
 
-                case BsonType.String: return collation.Compare(this.AsString, other.AsString);
+                case DocType.String: return collation.Compare(this.AsString, other.AsString);
 
-                case BsonType.Document: return this.AsDocument.CompareTo(other);
-                case BsonType.Array: return this.AsArray.CompareTo(other);
+                case DocType.Document: return this.AsDocument.CompareTo(other);
+                case DocType.Array: return this.AsArray.CompareTo(other);
 
-                case BsonType.Binary: return this.AsBinary.BinaryCompareTo(other.AsBinary);
-                case BsonType.ObjectId: return this.AsObjectId.CompareTo(other.AsObjectId);
-                case BsonType.Guid: return this.AsGuid.CompareTo(other.AsGuid);
+                case DocType.Blob: return this.AsBinary.BinaryCompareTo(other.AsBinary);
+                case DocType.Guid: return this.AsGuid.CompareTo(other.AsGuid);
 
-                case BsonType.Boolean: return this.AsBoolean.CompareTo(other.AsBoolean);
-                case BsonType.DateTime:
+                case DocType.Boolean: return this.AsBoolean.CompareTo(other.AsBoolean);
+                case DocType.DateTime:
                     var d0 = this.AsDateTime;
                     var d1 = other.AsDateTime;
                     if (d0.Kind != DateTimeKind.Utc) d0 = d0.ToUniversalTime();
@@ -494,7 +493,7 @@ namespace Dbarone.Net.Document
             }
         }
 
-        public bool Equals(BsonValue other)
+        public bool Equals(DocValue other)
         {
             return this.CompareTo(other) == 0;
         }
@@ -503,7 +502,7 @@ namespace Dbarone.Net.Document
 
         #region Operators
 
-        public static bool operator ==(BsonValue lhs, BsonValue rhs)
+        public static bool operator ==(DocValue lhs, DocValue rhs)
         {
             if (object.ReferenceEquals(lhs, null)) return object.ReferenceEquals(rhs, null);
             if (object.ReferenceEquals(rhs, null)) return false; // don't check type because sometimes different types can be ==
@@ -511,34 +510,34 @@ namespace Dbarone.Net.Document
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(BsonValue lhs, BsonValue rhs)
+        public static bool operator !=(DocValue lhs, DocValue rhs)
         {
             return !(lhs == rhs);
         }
 
-        public static bool operator >=(BsonValue lhs, BsonValue rhs)
+        public static bool operator >=(DocValue lhs, DocValue rhs)
         {
             return lhs.CompareTo(rhs) >= 0;
         }
 
-        public static bool operator >(BsonValue lhs, BsonValue rhs)
+        public static bool operator >(DocValue lhs, DocValue rhs)
         {
             return lhs.CompareTo(rhs) > 0;
         }
 
-        public static bool operator <(BsonValue lhs, BsonValue rhs)
+        public static bool operator <(DocValue lhs, DocValue rhs)
         {
             return lhs.CompareTo(rhs) < 0;
         }
 
-        public static bool operator <=(BsonValue lhs, BsonValue rhs)
+        public static bool operator <=(DocValue lhs, DocValue rhs)
         {
             return lhs.CompareTo(rhs) <= 0;
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is BsonValue other)
+            if (obj is DocValue other)
             {
                 return this.Equals(other);
             }
