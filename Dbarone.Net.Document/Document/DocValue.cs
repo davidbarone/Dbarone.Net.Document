@@ -227,170 +227,144 @@ namespace Dbarone.Net.Document
 
         public bool IsNumber => this.IsInt32 || this.IsInt64 || this.IsDouble || this.IsDecimal;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public bool IsBinary => this.Type == BsonType.Binary;
+        public bool IsBlob => this.Type == DocType.Blob;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public bool IsBoolean => this.Type == BsonType.Boolean;
+        public bool IsBoolean => this.Type == DocType.Boolean;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public bool IsString => this.Type == BsonType.String;
+        public bool IsString => this.Type == DocType.String;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public bool IsObjectId => this.Type == BsonType.ObjectId;
+        public bool IsGuid => this.Type == DocType.Guid;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public bool IsGuid => this.Type == BsonType.Guid;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public bool IsDateTime => this.Type == BsonType.DateTime;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public bool IsMinValue => this.Type == BsonType.MinValue;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public bool IsMaxValue => this.Type == BsonType.MaxValue;
+        public bool IsDateTime => this.Type == DocType.DateTime;
 
         #endregion
 
         #region Implicit Ctor
 
         // Int32
-        public static implicit operator Int32(BsonValue value)
+        public static implicit operator Int32(DocValue value)
         {
             return (Int32)value.RawValue;
         }
 
         // Int32
-        public static implicit operator BsonValue(Int32 value)
+        public static implicit operator DocValue(Int32 value)
         {
-            return new BsonValue(value);
+            return new DocValue(value);
         }
 
         // Int64
-        public static implicit operator Int64(BsonValue value)
+        public static implicit operator Int64(DocValue value)
         {
             return (Int64)value.RawValue;
         }
 
         // Int64
-        public static implicit operator BsonValue(Int64 value)
+        public static implicit operator DocValue(Int64 value)
         {
-            return new BsonValue(value);
+            return new DocValue(value);
         }
 
         // Double
-        public static implicit operator Double(BsonValue value)
+        public static implicit operator Double(DocValue value)
         {
             return (Double)value.RawValue;
         }
 
         // Double
-        public static implicit operator BsonValue(Double value)
+        public static implicit operator DocValue(Double value)
         {
-            return new BsonValue(value);
+            return new DocValue(value);
         }
 
         // Decimal
-        public static implicit operator Decimal(BsonValue value)
+        public static implicit operator Decimal(DocValue value)
         {
             return (Decimal)value.RawValue;
         }
 
         // Decimal
-        public static implicit operator BsonValue(Decimal value)
+        public static implicit operator DocValue(Decimal value)
         {
-            return new BsonValue(value);
+            return new DocValue(value);
         }
 
         // UInt64 (to avoid ambigous between Double-Decimal)
-        public static implicit operator UInt64(BsonValue value)
+        public static implicit operator UInt64(DocValue value)
         {
             return (UInt64)value.RawValue;
         }
 
         // Decimal
-        public static implicit operator BsonValue(UInt64 value)
+        public static implicit operator DocValue(UInt64 value)
         {
-            return new BsonValue((Double)value);
+            return new DocValue((Double)value);
         }
 
         // String
-        public static implicit operator String(BsonValue value)
+        public static implicit operator String(DocValue value)
         {
             return (String)value.RawValue;
         }
 
         // String
-        public static implicit operator BsonValue(String value)
+        public static implicit operator DocValue(String value)
         {
-            return new BsonValue(value);
+            return new DocValue(value);
         }
 
         // Binary
-        public static implicit operator Byte[](BsonValue value)
+        public static implicit operator Byte[](DocValue value)
         {
             return (Byte[])value.RawValue;
         }
 
         // Binary
-        public static implicit operator BsonValue(Byte[] value)
+        public static implicit operator DocValue(Byte[] value)
         {
-            return new BsonValue(value);
-        }
-
-        // ObjectId
-        public static implicit operator ObjectId(BsonValue value)
-        {
-            return (ObjectId)value.RawValue;
-        }
-
-        // ObjectId
-        public static implicit operator BsonValue(ObjectId value)
-        {
-            return new BsonValue(value);
+            return new DocValue(value);
         }
 
         // Guid
-        public static implicit operator Guid(BsonValue value)
+        public static implicit operator Guid(DocValue value)
         {
             return (Guid)value.RawValue;
         }
 
         // Guid
-        public static implicit operator BsonValue(Guid value)
+        public static implicit operator DocValue(Guid value)
         {
-            return new BsonValue(value);
+            return new DocValue(value);
         }
 
         // Boolean
-        public static implicit operator Boolean(BsonValue value)
+        public static implicit operator Boolean(DocValue value)
         {
             return (Boolean)value.RawValue;
         }
 
         // Boolean
-        public static implicit operator BsonValue(Boolean value)
+        public static implicit operator DocValue(Boolean value)
         {
-            return new BsonValue(value);
+            return new DocValue(value);
         }
 
         // DateTime
-        public static implicit operator DateTime(BsonValue value)
+        public static implicit operator DateTime(DocValue value)
         {
             return (DateTime)value.RawValue;
         }
 
         // DateTime
-        public static implicit operator BsonValue(DateTime value)
+        public static implicit operator DocValue(DateTime value)
         {
-            return new BsonValue(value);
+            return new DocValue(value);
         }
 
         // +
-        public static BsonValue operator +(BsonValue left, BsonValue right)
+        public static DocValue operator +(DocValue left, DocValue right)
         {
-            if (!left.IsNumber || !right.IsNumber) return BsonValue.Null;
+            if (!left.IsNumber || !right.IsNumber) return DocValue.Null;
 
             if (left.IsInt32 && right.IsInt32) return left.AsInt32 + right.AsInt32;
             if (left.IsInt64 && right.IsInt64) return left.AsInt64 + right.AsInt64;
@@ -398,12 +372,12 @@ namespace Dbarone.Net.Document
             if (left.IsDecimal && right.IsDecimal) return left.AsDecimal + right.AsDecimal;
 
             var result = left.AsDecimal + right.AsDecimal;
-            var type = (BsonType)Math.Max((int)left.Type, (int)right.Type);
+            var type = (DocType)Math.Max((int)left.Type, (int)right.Type);
 
             return
-                type == BsonType.Int64 ? new BsonValue((Int64)result) :
-                type == BsonType.Double ? new BsonValue((Double)result) :
-                new BsonValue(result);
+                type == DocType.Int64 ? new DocValue((Int64)result) :
+                type == DocType.Double ? new DocValue((Double)result) :
+                new DocValue(result);
         }
 
         // -
