@@ -464,8 +464,6 @@ namespace Dbarone.Net.Document
             switch (this.Type)
             {
                 case DocType.Null:
-                case DocType.MinValue:
-                case DocType.MaxValue:
                     return 0;
 
                 case DocType.Int32: return this.AsInt32.CompareTo(other.AsInt32);
@@ -478,7 +476,7 @@ namespace Dbarone.Net.Document
                 case DocType.Document: return this.AsDocument.CompareTo(other);
                 case DocType.Array: return this.AsArray.CompareTo(other);
 
-                case DocType.Blob: return this.AsBinary.BinaryCompareTo(other.AsBinary);
+                case DocType.Blob: return this.BinaryCompare(this.AsBinary, other.AsBinary);
                 case DocType.Guid: return this.AsGuid.CompareTo(other.AsGuid);
 
                 case DocType.Boolean: return this.AsBoolean.CompareTo(other.AsBoolean);
@@ -491,6 +489,23 @@ namespace Dbarone.Net.Document
 
                 default: throw new NotImplementedException();
             }
+        }
+
+       private int BinaryCompare(byte[] lh, byte[] rh)
+        {
+            if (lh == null) return rh == null ? 0 : -1;
+            if (rh == null) return 1;
+
+            var result = 0;
+            var i = 0;
+            var stop = Math.Min(lh.Length, rh.Length);
+
+            for (; 0 == result && i < stop; i++)
+                result = lh[i].CompareTo(rh[i]);
+
+            if (result != 0) return result < 0 ? -1 : 1;
+            if (i == lh.Length) return i == rh.Length ? 0 : -1;
+            return 1;
         }
 
         public bool Equals(DocValue other)
@@ -565,26 +580,32 @@ namespace Dbarone.Net.Document
         {
             switch (this.Type)
             {
-                case BsonType.Null:
-                case BsonType.MinValue:
-                case BsonType.MaxValue: return 0;
+                case DocType.Null: return 0;
 
-                case BsonType.Int32: return 4;
-                case BsonType.Int64: return 8;
-                case BsonType.Double: return 8;
-                case BsonType.Decimal: return 16;
+                case DocType.Boolean:
+                case DocType.SByte:
+                case DocType.Byte: return 1;
 
-                case BsonType.String: return Encoding.UTF8.GetByteCount(this.AsString);
+                case DocType.Char:
+                case DocType.Int16:
+                case DocType.UInt16: return 2;
 
-                case BsonType.Binary: return this.AsBinary.Length;
-                case BsonType.ObjectId: return 12;
-                case BsonType.Guid: return 16;
+                case DocType.Int32: 
+                case DocType.UInt32:
+                case DocType.Single: return 4;
 
-                case BsonType.Boolean: return 1;
-                case BsonType.DateTime: return 8;
+                case DocType.Int64:
+                case DocType.UInt64:
+                case DocType.DateTime:
+                case DocType.Double: return 8;
 
-                case BsonType.Document: return this.AsDocument.GetBytesCount(recalc);
-                case BsonType.Array: return this.AsArray.GetBytesCount(recalc);
+                case DocType.Decimal:
+                case DocType.Guid: return 16;
+
+                case DocType.String: return Encoding.UTF8.GetByteCount(this.AsString);
+                case DocType.Blob: return this.AsBinary.Length;
+                case DocType.Document: return this.AsDocument.GetBytesCount(recalc);
+                case DocType.Array: return this.AsArray.GetBytesCount(recalc);
             }
 
             throw new ArgumentException();
@@ -593,10 +614,10 @@ namespace Dbarone.Net.Document
         /// <summary>
         /// Get how many bytes one single element will used in BSON format
         /// </summary>
-        protected int GetBytesCountElement(string key, BsonValue value)
+        protected int GetBytesCountElement(string key, DocValue value)
         {
             // check if data type is variant
-            var variant = value.Type == BsonType.String || value.Type == BsonType.Binary || value.Type == BsonType.Guid;
+            var variant = value.Type == DocType.String || value.Type == DocType.Blob || value.Type == DocType.Guid;
 
             return
                 1 + // element type
