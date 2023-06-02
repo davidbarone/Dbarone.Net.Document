@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dbarone.Net.Extensions;
 
 namespace Dbarone.Net.Document
 {
@@ -113,30 +114,30 @@ namespace Dbarone.Net.Document
             }
         }
 
-        public void Add(string key, DocValue value) => this.RawValue.Add(key, value ?? BsonValue.Null);
+        public void Add(string key, DocValue value) => this.RawValue.Add(key, value ?? DocValue.Null);
 
         public bool Remove(string key) => this.RawValue.Remove(key);
 
         public void Clear() => this.RawValue.Clear();
 
-        public bool TryGetValue(string key, out BsonValue value) => this.RawValue.TryGetValue(key, out value);
+        public bool TryGetValue(string key, out DocValue value) => this.RawValue.TryGetValue(key, out value);
 
-        public void Add(KeyValuePair<string, BsonValue> item) => this.Add(item.Key, item.Value);
+        public void Add(KeyValuePair<string, DocValue> item) => this.Add(item.Key, item.Value);
 
-        public bool Contains(KeyValuePair<string, BsonValue> item) => this.RawValue.Contains(item);
+        public bool Contains(KeyValuePair<string, DocValue> item) => this.RawValue.Contains(item);
 
-        public bool Remove(KeyValuePair<string, BsonValue> item) => this.Remove(item.Key);
+        public bool Remove(KeyValuePair<string, DocValue> item) => this.Remove(item.Key);
 
-        public IEnumerator<KeyValuePair<string, BsonValue>> GetEnumerator() => this.RawValue.GetEnumerator();
+        public IEnumerator<KeyValuePair<string, DocValue>> GetEnumerator() => this.RawValue.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => this.RawValue.GetEnumerator();
 
-        public void CopyTo(KeyValuePair<string, BsonValue>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<string, DocValue>[] array, int arrayIndex)
         {
-            ((ICollection<KeyValuePair<string, BsonValue>>)this.RawValue).CopyTo(array, arrayIndex);
+            ((ICollection<KeyValuePair<string, DocValue>>)this.RawValue).CopyTo(array, arrayIndex);
         }
 
-        public void CopyTo(BsonDocument other)
+        public void CopyTo(DocDocument other)
         {
             foreach(var element in this)
             {
