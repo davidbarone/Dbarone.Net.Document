@@ -22,22 +22,23 @@ using Dbarone.Net.Document;
 /// 5               Decimal
 /// 6               Double
 /// 7               Single
-/// 8               VarInt
-/// 9               Int16
-/// 10              UInt16
-/// 11              Int32
-/// 12              UInt32
-/// 13              Int64
-/// 14              UInt64
-/// 15              DateTime
-/// 16              Guid
+
+/// 8               Int16
+/// 9              UInt16
+/// 10              Int32
+/// 11              UInt32
+/// 12              Int64
+/// 13              UInt64
+/// 14              DateTime
+/// 15              Guid
 /// 
 /// Variable Length data types
 /// 
-/// N>=20, N%4==0   Array
-/// N>=20, N%4==1   Blob. Value is a byte array that is (N-18)/3 bytes long.
-/// N>=20, N%4==2   String. Value is a string that is (N-19)/3 bytes long, stored in the text encoding of the database.
-/// N>=20, N%4==3   Document. value is a document that is (N-20)/3 bytes long
+/// N>=20, N%4==0   Array. Value is a byte array that is (N-20)/5 bytes long
+/// N>=20, N%4==1   Blob. Value is a byte array that is (N-21)/5 bytes long.
+/// N>=20, N%4==2   String. Value is a string that is (N-22)/5 bytes long, stored in the text encoding of the database.
+/// N>=20, N%4==3   Document. value is a document that is (N-23)/5 bytes long
+/// N>=20, N%4==4   VarInt. value is (N-24)/5 bytes long
 /// </summary>
 public class SerialType
 {
@@ -63,29 +64,35 @@ public class SerialType
             this.DocType = (DocType)value.Value;
             this.Length = null;
         }
-        else if (value.Value % 4 == 0)
+        else if (value.Value % 5 == 0)
         {
             // array
             this.DocType = DocType.Array;
-            this.Length = (((int)value.Value % VariableStart) - VariableStart) / 4;
+            this.Length = ((int)value.Value - ((int)value.Value % 5) - VariableStart) / 5;
         }
-        else if (value.Value % 4 == 1)
+        else if (value.Value % 5 == 1)
         {
             // blob
             this.DocType = DocType.Blob;
-            this.Length = (((int)value.Value % VariableStart) - VariableStart) / 4;
+            this.Length = ((int)value.Value - ((int)value.Value % 5) - VariableStart) / 5;
         }
-        else if (value.Value % 4 == 2)
+        else if (value.Value % 5 == 2)
         {
             // string
             this.DocType = DocType.String;
-            this.Length = (((int)value.Value % VariableStart) - VariableStart) / 4;
+            this.Length = ((int)value.Value - ((int)value.Value % 5) - VariableStart) / 5;
         }
-        else if (value.Value % 4 == 3)
+        else if (value.Value % 5 == 3)
         {
             // document
             this.DocType = DocType.Document;
-            this.Length = (((int)value.Value % VariableStart) - VariableStart) / 4;
+            this.Length = ((int)value.Value - ((int)value.Value % 5) - VariableStart) / 5;
+        }
+        else if (value.Value % 5 == 4)
+        {
+            // VarInt
+            this.DocType = DocType.VarInt;
+            this.Length = ((int)value.Value - ((int)value.Value % 5) - VariableStart) / 5;
         }
     }
 
@@ -100,7 +107,7 @@ public class SerialType
             {
                 throw new Exception("Length must be set.");
             }
-            this.Value = VariableStart + (length.Value) + 0;
+            this.Value = VariableStart + (length.Value * 5) + 0;
         }
         else if (docType == DocType.Blob)
         {
@@ -108,7 +115,7 @@ public class SerialType
             {
                 throw new Exception("Length must be set.");
             }
-            this.Value = VariableStart + (length.Value) + 1;
+            this.Value = VariableStart + (length.Value * 5) + 1;
         }
         else if (docType == DocType.String)
         {
@@ -116,15 +123,23 @@ public class SerialType
             {
                 throw new Exception("Length must be set.");
             }
-            this.Value = VariableStart + (length.Value) + 2;
+            this.Value = VariableStart + (length.Value * 5) + 2;
         }
-        if (docType == DocType.Document)
+        else if (docType == DocType.Document)
         {
             if (length == null)
             {
                 throw new Exception("Length must be set.");
             }
-            this.Value = VariableStart + (length.Value) + 3;
+            this.Value = VariableStart + (length.Value * 5) + 3;
+        }
+        else if (docType == DocType.VarInt)
+        {
+            if (length == null)
+            {
+                throw new Exception("Length must be set.");
+            }
+            this.Value = VariableStart + (length.Value * 5) + 4;
         }
         else if ((int)docType < VariableStart)
         {
