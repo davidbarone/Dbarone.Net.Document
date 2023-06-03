@@ -38,11 +38,11 @@ public struct VarInt
     {
         Bytes = bytes;
         int index = 0;
-        int value = 0;
+        long value = 0;
         byte b;
         do
         {
-            value = (value << 7) | ((b = bytes[index]) & 0x7F);
+            value = (value << 7) | (long)((b = bytes[index]) & 0x7F);
             index++;
         } while ((b & 0x80) != 0);
 
@@ -132,7 +132,7 @@ public struct VarInt
         {
             index++;
             buffer = (byte)(value & 0x7F | 0x80);   // 0x80 is continuation bit
-             
+
             bytes[index] = buffer;
         }
 
