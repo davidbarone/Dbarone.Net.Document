@@ -1,10 +1,11 @@
 using Dbarone.Net.Document;
 
 /// <summary>
-/// Encodes the data type and size of a document key or value.
+/// Encodes the data type and size of a value.
 /// 
-/// When serialising all keys and values in a document, the keys and values payloads
-/// are prefixed with a value (encoded as a SerialType value).
+/// When serialising all keys and values in a document, the payload is
+/// prefixed with a SerialType value, which encodes the value's data type
+/// and length.
 /// 
 /// The serial type is stored in the database as a VarInt. The values are as follows:
 /// 
@@ -27,17 +28,19 @@ using Dbarone.Net.Document;
 /// 14              UInt64
 /// 15              DateTime
 /// 16              Guid
-/// 17              Array
-/// N>=18, N%3==0    Blob. Value is a byte array that is (N-18)/3 bytes long.
-/// N>=19, N%3==1    String. Value is a string that is (N-19)/3 bytes long, stored in the text encoding of the database.
-/// N>=20, N%3==2   Document. value is a document that is (N-20)/3 bytes long
+/// 
+/// Variable Length data types
+/// N>=20, N%4==0   Array
+/// N>=20, N%4==1   Blob. Value is a byte array that is (N-18)/3 bytes long.
+/// N>=20, N%4==2   String. Value is a string that is (N-19)/3 bytes long, stored in the text encoding of the database.
+/// N>=20, N%4==3   Document. value is a document that is (N-20)/3 bytes long
 /// </summary>
 public class SerialType
 {
     /// <summary>
-    /// Data type of the value.
+    /// The DocType of the value.
     /// </summary>
-    public DataType DataType { get; set; }
+    public DocType DocType { get; set; }
 
     /// <summary>
     /// Byte length of the data if string or blob.
@@ -46,28 +49,39 @@ public class SerialType
 
     public VarInt Value { get; init; }
 
+    private const int VariableStart = 20;
+
     public SerialType(VarInt value)
     {
-        int variableTypeStart = (int)DataType.Blob;
-        int evenStart = variableTypeStart % 2 == 1 ? variableTypeStart + 1 : variableTypeStart;
-        int oddStart = evenStart + 1;
-
-        if (value.Value < variableTypeStart)
+        if (value.Value < VariableStart)
         {
-            this.DataType = (DataType)value.Value;
+            // Fixed-width type
+            this.DocType = (DocType)value.Value;
             this.Length = null;
         }
-        else if (value.Value % 2 == 0)
+        else if (value.Value % 4 == 0)
         {
-            // even number = blob
-            this.DataType = DataType.Blob;
-            this.Length = (value.Value - evenStart) / 2;
+            // array
+            this.DocType = DocType.Array;
+            this.Length = (((int)value.Value % VariableStart) - VariableStart) / 4;
         }
-        else
+        else if (value.Value % 4 == 1)
         {
-            // odd number = string
-            this.DataType = DataType.String;
-            this.Length = (value.Value - oddStart) / 2;
+            // blob
+            this.DocType = DocType.Blob;
+            this.Length = (((int)value.Value % VariableStart) - VariableStart) / 4;
+        }
+        else if (value.Value % 4 == 2)
+        {
+            // string
+            this.DocType = DocType.String;
+            this.Length = (((int)value.Value % VariableStart) - VariableStart) / 4;
+        }
+        else if (value.Value % 4 == 3)
+        {
+            // document
+            this.DocType = DocType.Document;
+            this.Length = (((int)value.Value % VariableStart) - VariableStart) / 4;
         }
     }
 

@@ -3,7 +3,7 @@ namespace Dbarone.Net.Document;
 /// <summary>
 /// Represents data types allowed in Dbarone.Net.Document.
 /// </summary>
-public enum DocType
+public enum DocType : int
 {
     /// <summary>
     /// Null value object.
