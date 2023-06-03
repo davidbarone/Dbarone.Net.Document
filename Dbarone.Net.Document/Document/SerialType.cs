@@ -11,6 +11,9 @@ using Dbarone.Net.Document;
 /// 
 /// Serial Type     Data Type
 /// ===========     =========
+///
+/// Fixed Width DocTypes
+/// 
 /// 0               NULL value
 /// 1               Boolean
 /// 2               Byte
@@ -30,6 +33,7 @@ using Dbarone.Net.Document;
 /// 16              Guid
 /// 
 /// Variable Length data types
+/// 
 /// N>=20, N%4==0   Array
 /// N>=20, N%4==1   Blob. Value is a byte array that is (N-18)/3 bytes long.
 /// N>=20, N%4==2   String. Value is a string that is (N-19)/3 bytes long, stored in the text encoding of the database.
@@ -85,37 +89,50 @@ public class SerialType
         }
     }
 
-    public SerialType(DataType dataType, int? length = null)
+    public SerialType(DocType docType, int? length = null)
     {
-        this.DataType = dataType;
+        this.DocType = docType;
         this.Length = length;
 
-        int variableTypeStart = (int)DataType.Blob;
-        int evenStart = variableTypeStart % 2 == 1 ? variableTypeStart + 1 : variableTypeStart;
-        int oddStart = evenStart + 1;
-
-        if (dataType == DataType.Blob)
+        if (docType == DocType.Array)
         {
             if (length == null)
             {
                 throw new Exception("Length must be set.");
             }
-            // Serial type for byte[] values is (N-variableTypeStart)/2 and even. 
-            this.Value = new VarInt((length.Value * 2) + evenStart);
+            this.Value = VariableStart + (length.Value) + 0;
         }
-        else if (dataType == DataType.String)
+        else if (docType == DocType.Blob)
         {
             if (length == null)
             {
                 throw new Exception("Length must be set.");
             }
-            // Serial type for string values is (N-variableTypeStart)/2 and odd. 
-            this.Value = new VarInt((length.Value * 2) + oddStart);
+            this.Value = VariableStart + (length.Value) + 1;
+        }
+        else if (docType == DocType.String)
+        {
+            if (length == null)
+            {
+                throw new Exception("Length must be set.");
+            }
+            this.Value = VariableStart + (length.Value) + 2;
+        }
+        if (docType == DocType.Document)
+        {
+            if (length == null)
+            {
+                throw new Exception("Length must be set.");
+            }
+            this.Value = VariableStart + (length.Value) + 3;
+        }
+        else if ((int)docType < VariableStart)
+        {
+            this.Value = (int)docType;
         }
         else
         {
-            // For other types, return a VarInt of the DataType enum value.
-            this.Value = new VarInt((int)dataType);
+            throw new Exception("Should not get here!");
         }
     }
 }
