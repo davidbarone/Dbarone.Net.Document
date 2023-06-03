@@ -25,6 +25,10 @@ public struct VarInt
 
     public VarInt(long value)
     {
+        if (value == long.MaxValue)
+        {
+            var a = 2;
+        }
         Value = value;
         Bytes = this.LongToByteArray(value);
         Size = Bytes.Length;
@@ -118,27 +122,22 @@ public struct VarInt
 
     private byte[] LongToByteArray(long value)
     {
-        byte[] bytes = new byte[4];
+        byte[] bytes = new byte[9]; // max length for Int64 -> VarInt is 9 bytes
         int index = 0;
-        long buffer = value & 0x7F;
+
+        byte buffer = (byte)(value & 0x7F);
+        bytes[index] = buffer;
 
         while ((value >>= 7) > 0)
         {
-            buffer <<= 8;
-            buffer |= 0x80;
-            buffer += (value & 0x7F);
-        }
-        while (true)
-        {
-            bytes[index] = (byte)buffer;
             index++;
-            if ((buffer & 0x80) > 0)
-                buffer >>= 8;
-            else
-                break;
+            buffer = (byte)(value & 0x7F | 0x80);   // 0x80 is continuation bit
+             
+            bytes[index] = buffer;
         }
 
-        return bytes[0..index];
+        Array.Reverse(bytes, 0, index + 1);
+        return bytes[0..(index + 1)];
     }
 
     #endregion
