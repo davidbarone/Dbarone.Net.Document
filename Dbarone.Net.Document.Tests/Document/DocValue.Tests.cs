@@ -5,6 +5,8 @@ using System;
 
 public class DocTests
 {
+    #region Ctor tests
+
     [Fact]
     public void Test_DocValue_Ctor_Null()
     {
@@ -176,4 +178,97 @@ public class DocTests
         Assert.Equal(DocType.Blob, docValue.Type);
     }
 
+    #endregion
+
+    #region Binary Operations
+
+    [Fact]
+    public void Test_DocValue_Operator_Add()
+    {
+        DocValue a = (int)4;
+        DocValue b = (int)3;
+        DocValue c = a + b;
+        Assert.Equal(7, (int)c);
+    }
+
+    [Fact]
+    public void Test_DocValue_Operator_Subtract()
+    {
+        DocValue a = (int)4;
+        DocValue b = (int)3;
+        DocValue c = a - b;
+        Assert.Equal(1, (int)c);
+    }
+
+    [Fact]
+    public void Test_DocValue_Operator_Multiply()
+    {
+        DocValue a = (int)4;
+        DocValue b = (int)3;
+        DocValue c = a * b;
+        Assert.Equal(12, (int)c);
+    }
+
+    [Fact]
+    public void Test_DocValue_Operator_Divide()
+    {
+        DocValue a = (int)12;
+        DocValue b = (int)3;
+        DocValue c = a / b;
+        Assert.Equal(4, (double)c);
+    }
+
+    #endregion
+
+    #region Comparison Operators
+
+    [Fact]
+    public void Test_DocValue_Operator_Equals()
+    {
+        DocValue a = (int)4;
+        DocValue b = (int)4;
+        Assert.True(a == b);
+    }
+
+    [Fact]
+    public void Test_DocValue_Operator_NotEquals()
+    {
+        DocValue a = (int)4;
+        DocValue b = (int)3;
+        Assert.True(a != b);
+    }
+
+    [Fact]
+    public void Test_DocValue_Operator_Greater()
+    {
+        DocValue a = (int)4;
+        DocValue b = (int)3;
+        Assert.True(a > b);
+    }
+
+    [Fact]
+    public void Test_DocValue_Operator_GreaterEquals()
+    {
+        DocValue a = (int)3;
+        DocValue b = (int)3;
+        Assert.True(a >= b);
+    }
+
+    [Fact]
+    public void Test_DocValue_Operator_Less()
+    {
+        DocValue a = (int)4;
+        DocValue b = (int)3;
+        Assert.True(b < a);
+    }
+
+    [Fact]
+    public void Test_DocValue_Operator_LessEquals()
+    {
+        DocValue a = (int)3;
+        DocValue b = (int)3;
+        Assert.True(b <= a);
+    }
+
+    #endregion
 }
