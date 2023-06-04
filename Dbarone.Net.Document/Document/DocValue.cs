@@ -37,15 +37,75 @@ namespace Dbarone.Net.Document
             this.RawValue = null;
         }
 
+        public DocValue(Boolean value)
+        {
+            this.Type = DocType.Boolean;
+            this.RawValue = value;
+        }
+
+        public DocValue(Byte value)
+        {
+            this.Type = DocType.Byte;
+            this.RawValue = value;
+        }
+
+        public DocValue(SByte value)
+        {
+            this.Type = DocType.SByte;
+            this.RawValue = value;
+        }
+
+        public DocValue(char value)
+        {
+            this.Type = DocType.Char;
+            this.RawValue = value;
+        }
+
+        public DocValue(Int16 value)
+        {
+            this.Type = DocType.Int16;
+            this.RawValue = value;
+        }
+
+        public DocValue(UInt16 value)
+        {
+            this.Type = DocType.UInt16;
+            this.RawValue = value;
+        }
+
         public DocValue(Int32 value)
         {
             this.Type = DocType.Int32;
             this.RawValue = value;
         }
 
+        public DocValue(UInt32 value)
+        {
+            this.Type = DocType.UInt32;
+            this.RawValue = value;
+        }
+
+        public DocValue(Single value)
+        {
+            this.Type = DocType.Single;
+            this.RawValue = value;
+        }
+
         public DocValue(Int64 value)
         {
             this.Type = DocType.Int64;
+            this.RawValue = value;
+        }
+
+        public DocValue(UInt64 value)
+        {
+            this.Type = DocType.UInt64;
+            this.RawValue = value;
+        }
+
+        public DocValue(DateTime value)
+        {
+            this.Type = DocType.DateTime;
             this.RawValue = value;
         }
 
@@ -61,6 +121,12 @@ namespace Dbarone.Net.Document
             this.RawValue = value;
         }
 
+        public DocValue(Guid value)
+        {
+            this.Type = DocType.Guid;
+            this.RawValue = value;
+        }
+
         public DocValue(String value)
         {
             this.Type = value == null ? DocType.Null : DocType.String;
@@ -70,24 +136,6 @@ namespace Dbarone.Net.Document
         public DocValue(Byte[] value)
         {
             this.Type = value == null ? DocType.Null : DocType.Blob;
-            this.RawValue = value;
-        }
-
-        public DocValue(Guid value)
-        {
-            this.Type = DocType.Guid;
-            this.RawValue = value;
-        }
-
-        public DocValue(Boolean value)
-        {
-            this.Type = DocType.Boolean;
-            this.RawValue = value;
-        }
-
-        public DocValue(DateTime value)
-        {
-            this.Type = DocType.DateTime;
             this.RawValue = value;
         }
 
@@ -102,17 +150,25 @@ namespace Dbarone.Net.Document
             this.RawValue = value;
 
             if (value == null) this.Type = DocType.Null;
+            else if (value is Boolean) this.Type = DocType.Boolean;
+            else if (value is Byte) this.Type = DocType.Byte;
+            else if (value is SByte) this.Type = DocType.SByte;
+            else if (value is Char) this.Type = DocType.Char;
+            else if (value is Int16) this.Type = DocType.Int16;
+            else if (value is UInt16) this.Type = DocType.Int16;
             else if (value is Int32) this.Type = DocType.Int32;
+            else if (value is UInt32) this.Type = DocType.Int32;
+            else if (value is Single) this.Type = DocType.Single;
             else if (value is Int64) this.Type = DocType.Int64;
+            else if (value is UInt64) this.Type = DocType.UInt64;
+            else if (value is DateTime) this.Type = DocType.DateTime;
             else if (value is Double) this.Type = DocType.Double;
             else if (value is Decimal) this.Type = DocType.Decimal;
+            else if (value is Guid) this.Type = DocType.Guid;
             else if (value is String) this.Type = DocType.String;
             else if (value is IDictionary<string, DocValue>) this.Type = DocType.Document;
             else if (value is IList<DocValue>) this.Type = DocType.Array;
             else if (value is Byte[]) this.Type = DocType.Blob;
-            else if (value is Guid) this.Type = DocType.Guid;
-            else if (value is Boolean) this.Type = DocType.Boolean;
-            else if (value is DateTime) this.Type = DocType.DateTime;
             else if (value is DocValue)
             {
                 var v = (DocValue)value;
@@ -132,7 +188,7 @@ namespace Dbarone.Net.Document
 
                     foreach (var key in dictionary.Keys)
                     {
-                        if (key != null && key.ToString() !=null)
+                        if (key != null && key.ToString() != null)
                         {
                             dict.Add(key.ToString()!, new DocValue((dictionary[key])));
                         }
@@ -192,19 +248,31 @@ namespace Dbarone.Net.Document
 
         public Byte[] AsBinary => this.RawValue as Byte[];
 
+        public string AsString => (string)this.RawValue;
+
         public bool AsBoolean => (bool)this.RawValue;
 
-        public string AsString => (string)this.RawValue;
+        public Byte AsByte => (Byte)this.RawValue;
+
+        public SByte AsSByte => (SByte)this.RawValue;
+
+        public int AsInt16 => Convert.ToInt16(this.RawValue);
+
+        public uint AsUInt16 => Convert.ToUInt16(this.RawValue);
 
         public int AsInt32 => Convert.ToInt32(this.RawValue);
 
+        public uint AsUInt32 => Convert.ToUInt32(this.RawValue);
+
         public long AsInt64 => Convert.ToInt64(this.RawValue);
 
+        public ulong AsUInt64 => Convert.ToUInt64(this.RawValue);
+
+        public DateTime AsDateTime => (DateTime)this.RawValue;
+        
         public double AsDouble => Convert.ToDouble(this.RawValue);
 
         public decimal AsDecimal => Convert.ToDecimal(this.RawValue);
-
-        public DateTime AsDateTime => (DateTime)this.RawValue;
 
         public Guid AsGuid => (Guid)this.RawValue;
 
@@ -214,29 +282,45 @@ namespace Dbarone.Net.Document
 
         public bool IsNull => this.Type == DocType.Null;
 
-        public bool IsArray => this.Type == DocType.Array;
+        public bool IsBoolean => this.Type == DocType.Boolean;
 
-        public bool IsDocument => this.Type == DocType.Document;
+        public bool IsByte => this.Type == DocType.Byte;
+
+        public bool IsSByte => this.Type == DocType.SByte;
+
+        public bool IsChar => this.Type == DocType.Char;
+
+        public bool IsInt16 => this.Type == DocType.Int16;
+
+        public bool IsUInt16 => this.Type == DocType.UInt16;
 
         public bool IsInt32 => this.Type == DocType.Int32;
 
+        public bool IsUInt32 => this.Type == DocType.UInt32;
+
+        public bool IsSingle => this.Type == DocType.Single;
+
         public bool IsInt64 => this.Type == DocType.Int64;
+
+        public bool IsUInt64 => this.Type == DocType.UInt64;
+
+        public bool IsDateTime => this.Type == DocType.DateTime;
 
         public bool IsDouble => this.Type == DocType.Double;
 
         public bool IsDecimal => this.Type == DocType.Decimal;
 
-        public bool IsNumber => this.IsInt32 || this.IsInt64 || this.IsDouble || this.IsDecimal;
+        public bool IsGuid => this.Type == DocType.Guid;
+
+        public bool IsNumber => this.IsByte || this.IsSByte || this.IsInt16 || this.IsUInt16 || this.IsInt32 || this.IsUInt32 || this.IsInt64 || this.IsUInt64 || this.IsSingle || this.IsDouble || this.IsDecimal;
 
         public bool IsBlob => this.Type == DocType.Blob;
 
-        public bool IsBoolean => this.Type == DocType.Boolean;
+        public bool IsArray => this.Type == DocType.Array;
+
+        public bool IsDocument => this.Type == DocType.Document;
 
         public bool IsString => this.Type == DocType.String;
-
-        public bool IsGuid => this.Type == DocType.Guid;
-
-        public bool IsDateTime => this.Type == DocType.DateTime;
 
         #endregion
 
@@ -492,7 +576,7 @@ namespace Dbarone.Net.Document
             }
         }
 
-       private int BinaryCompare(byte[] lh, byte[] rh)
+        private int BinaryCompare(byte[] lh, byte[] rh)
         {
             if (lh == null) return rh == null ? 0 : -1;
             if (rh == null) return 1;
@@ -591,7 +675,7 @@ namespace Dbarone.Net.Document
                 case DocType.Int16:
                 case DocType.UInt16: return 2;
 
-                case DocType.Int32: 
+                case DocType.Int32:
                 case DocType.UInt32:
                 case DocType.Single: return 4;
 
