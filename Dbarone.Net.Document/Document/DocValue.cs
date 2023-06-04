@@ -326,6 +326,78 @@ namespace Dbarone.Net.Document
 
         #region Implicit Ctor
 
+        // Boolean
+        public static implicit operator Boolean(DocValue value)
+        {
+            return (Boolean)value.RawValue;
+        }
+
+        // Boolean
+        public static implicit operator DocValue(Boolean value)
+        {
+            return new DocValue(value);
+        }
+
+        // Byte
+        public static implicit operator Byte(DocValue value)
+        {
+            return (Byte)value.RawValue;
+        }
+
+        // Byte
+        public static implicit operator DocValue(Byte value)
+        {
+            return new DocValue(value);
+        }
+
+        // SByte
+        public static implicit operator SByte(DocValue value)
+        {
+            return (SByte)value.RawValue;
+        }
+
+        // SByte
+        public static implicit operator DocValue(SByte value)
+        {
+            return new DocValue(value);
+        }
+
+        // Char
+        public static implicit operator Char(DocValue value)
+        {
+            return (Char)value.RawValue;
+        }
+
+        // Char
+        public static implicit operator DocValue(Char value)
+        {
+            return new DocValue(value);
+        }
+
+        // Int16
+        public static implicit operator Int16(DocValue value)
+        {
+            return (Int16)value.RawValue;
+        }
+
+        // Int16
+        public static implicit operator DocValue(Int16 value)
+        {
+            return new DocValue(value);
+        }
+
+        // UInt16
+        public static implicit operator UInt16(DocValue value)
+        {
+            return (UInt16)value.RawValue;
+        }
+
+        // UInt16
+        public static implicit operator DocValue(UInt16 value)
+        {
+            return new DocValue(value);
+        }
+
         // Int32
         public static implicit operator Int32(DocValue value)
         {
@@ -338,6 +410,30 @@ namespace Dbarone.Net.Document
             return new DocValue(value);
         }
 
+        // UInt32
+        public static implicit operator UInt32(DocValue value)
+        {
+            return (UInt32)value.RawValue;
+        }
+
+        // UInt32
+        public static implicit operator DocValue(UInt32 value)
+        {
+            return new DocValue(value);
+        }
+
+        // Single
+        public static implicit operator Single(DocValue value)
+        {
+            return (Single)value.RawValue;
+        }
+
+        // Single
+        public static implicit operator DocValue(Single value)
+        {
+            return new DocValue(value);
+        }
+
         // Int64
         public static implicit operator Int64(DocValue value)
         {
@@ -346,6 +442,30 @@ namespace Dbarone.Net.Document
 
         // Int64
         public static implicit operator DocValue(Int64 value)
+        {
+            return new DocValue(value);
+        }
+
+        // UInt64
+        public static implicit operator UInt64(DocValue value)
+        {
+            return (UInt64)value.RawValue;
+        }
+
+        // UInt64
+        public static implicit operator DocValue(UInt64 value)
+        {
+            return new DocValue(value);
+        }
+
+        // DateTime
+        public static implicit operator DateTime(DocValue value)
+        {
+            return (DateTime)value.RawValue;
+        }
+
+        // DateTime
+        public static implicit operator DocValue(DateTime value)
         {
             return new DocValue(value);
         }
@@ -374,16 +494,16 @@ namespace Dbarone.Net.Document
             return new DocValue(value);
         }
 
-        // UInt64 (to avoid ambigous between Double-Decimal)
-        public static implicit operator UInt64(DocValue value)
+        // Guid
+        public static implicit operator Guid(DocValue value)
         {
-            return (UInt64)value.RawValue;
+            return (Guid)value.RawValue;
         }
 
-        // Decimal
-        public static implicit operator DocValue(UInt64 value)
+        // Guid
+        public static implicit operator DocValue(Guid value)
         {
-            return new DocValue((Double)value);
+            return new DocValue(value);
         }
 
         // String
@@ -406,42 +526,6 @@ namespace Dbarone.Net.Document
 
         // Binary
         public static implicit operator DocValue(Byte[] value)
-        {
-            return new DocValue(value);
-        }
-
-        // Guid
-        public static implicit operator Guid(DocValue value)
-        {
-            return (Guid)value.RawValue;
-        }
-
-        // Guid
-        public static implicit operator DocValue(Guid value)
-        {
-            return new DocValue(value);
-        }
-
-        // Boolean
-        public static implicit operator Boolean(DocValue value)
-        {
-            return (Boolean)value.RawValue;
-        }
-
-        // Boolean
-        public static implicit operator DocValue(Boolean value)
-        {
-            return new DocValue(value);
-        }
-
-        // DateTime
-        public static implicit operator DateTime(DocValue value)
-        {
-            return (DateTime)value.RawValue;
-        }
-
-        // DateTime
-        public static implicit operator DocValue(DateTime value)
         {
             return new DocValue(value);
         }
@@ -713,6 +797,5 @@ namespace Dbarone.Net.Document
         }
 
         #endregion
-
     }
 }
