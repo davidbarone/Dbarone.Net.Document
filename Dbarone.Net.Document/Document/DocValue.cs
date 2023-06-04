@@ -242,7 +242,7 @@ namespace Dbarone.Net.Document
 
         #region Convert types
 
-        public DocArray AsArray => this as DocArray;
+        public DocArray AsArray => new DocArray(this.RawValue as IList<DocValue>);
 
         public DocDocument AsDocument => this as DocDocument;
 
