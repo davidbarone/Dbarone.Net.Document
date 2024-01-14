@@ -1,9 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <PackageId>Dbarone.Net.Document</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>David Barone</Authors>
+    <Company>Dbarone.com</Company>
+    <Description>A .NET object document format and serialisation library.</Description>
+    <RepositoryUrl>https://github.com/davidbarone/Dbarone.Net.Document</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/davidbarone/Dbarone.Net.Document</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>    
+
   </PropertyGroup>
 
   <ItemGroup>
