@@ -7,6 +7,8 @@ Dbarone.Net.Document is a document library offering the following services:
 - Document data structure allows for representing data structures as associative arrays (name value pairs or Dictionaries)
 - Serialisation and deserialisation
 
+For a full reference of this library, please refer to the [documentation](https://github.com/davidbarone/Dbarone.Net.Document/blob/main/Documentation.md).
+
 ## DocValue
 
 The DocValue class represents a single value. This includes scalar values, and complex data types like arrays and documents. The following types are supported
