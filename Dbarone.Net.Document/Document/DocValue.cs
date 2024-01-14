@@ -745,6 +745,9 @@ namespace Dbarone.Net.Document
         /// Returns how many bytes this BsonValue will consume when converted into binary BSON
         /// If recalc = false, use cached length value (from Array/Document only)
         /// </summary>
+        /// <param name="recalc">Set to true to force recalculation.</param>
+        /// <returns>Returns the document length.</returns>
+        /// <exception cref="ArgumentException">Throws an exception if an invalid document type.</exception>
         internal virtual int GetBytesCount(bool recalc)
         {
             switch (this.Type)
@@ -783,6 +786,9 @@ namespace Dbarone.Net.Document
         /// <summary>
         /// Get how many bytes one single element will used in BSON format
         /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>Returns the byte count for an element.</returns>
         protected int GetBytesCountElement(string key, DocValue value)
         {
             // check if data type is variant

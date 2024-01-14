@@ -61,6 +61,9 @@ namespace Dbarone.Net.Document
         /// <summary>
         /// Compare 2 string values using current culture/compare options
         /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value</param>
+        /// <returns>Returns 0 if the values are equal, <0 if left is less than right and >0 if left is greater than right.</returns>
         public int Compare(string left, string right)
         {
             var result = _compareInfo.Compare(left, right, this.SortOptions);

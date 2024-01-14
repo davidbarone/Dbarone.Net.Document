@@ -8,13 +8,24 @@ using Dbarone.Net.Extensions;
 
 namespace Dbarone.Net.Document
 {
+    /// <summary>
+    /// Represents a document as a dictionary of string / <see cref="DocValue"/> pairs.
+    /// </summary>
     public class DocDocument : DocValue, IDictionary<string, DocValue>
     {
+        /// <summary>
+        /// Creates an empty document.
+        /// </summary>
         public DocDocument()
             : base(DocType.Document, new Dictionary<string, DocValue>(StringComparer.OrdinalIgnoreCase))
         {
         }
 
+        /// <summary>
+        /// Creates a new document using a dictionary of values.
+        /// </summary>
+        /// <param name="dict">The dictionary containing the values.</param>
+        /// <exception cref="ArgumentNullException">Throws an error if a null dictionary value is passed in.</exception>
         public DocDocument(ConcurrentDictionary<string, DocValue> dict)
             : this()
         {
@@ -26,6 +37,11 @@ namespace Dbarone.Net.Document
             }
         }
 
+        /// <summary>
+        /// Creates a new document using a dictionary of values.
+        /// </summary>
+        /// <param name="dict">The dictionary containing the values.</param>
+        /// <exception cref="ArgumentNullException">Throws an error if a null dictionary value is passed in.</exception>
         public DocDocument(IDictionary<string, DocValue> dict)
             : this()
         {
@@ -37,6 +53,9 @@ namespace Dbarone.Net.Document
             }
         }
 
+        /// <summary>
+        /// Returns the raw value of the document, as an IDictionary.
+        /// </summary>
         public new IDictionary<string, DocValue> RawValue => base.RawValue as IDictionary<string, DocValue>;
 
         /// <summary>
@@ -101,6 +120,7 @@ namespace Dbarone.Net.Document
         /// <summary>
         /// Get all document elements - Return "_id" as first of all (if exists)
         /// </summary>
+        /// <returns></returns>
         public IEnumerable<KeyValuePair<string, DocValue>> GetElements()
         {
             if(this.RawValue.TryGetValue("_id", out var id))
@@ -114,8 +134,17 @@ namespace Dbarone.Net.Document
             }
         }
 
+        /// <summary>
+        /// Adds a new member to the document.
+        /// </summary>
+        /// <param name="key">The new member key.</param>
+        /// <param name="value">The new member value.</param>
         public void Add(string key, DocValue value) => this.RawValue.Add(key, value ?? DocValue.Null);
 
+        /// <summary>
+        /// Removes a member from the document.
+        /// </summary>
+        /// <param name="key">The member key to remove.</param>
         public bool Remove(string key) => this.RawValue.Remove(key);
 
         public void Clear() => this.RawValue.Clear();
@@ -149,6 +178,11 @@ namespace Dbarone.Net.Document
 
         private int _length = 0;
 
+        /// <summary>
+        /// Gets the byte count of the document.
+        /// </summary>
+        /// <param name="recalc">Set to true to recalc.</param>
+        /// <returns>Returns the document byte count.</returns>
         internal override int GetBytesCount(bool recalc)
         {
             if (recalc == false && _length > 0) return _length;
