@@ -271,4 +271,28 @@ public class DocTests
     }
 
     #endregion
+
+    #region Implicit conversions
+
+    [Fact]
+    public void Test_Int_To_DocValue(){
+        int a = 123;
+        DocValue doc = a;
+
+        Assert.NotNull(doc);
+        if (doc is not null)
+        {
+            Assert.Equal(a, doc.AsInt32);
+        }
+    }
+
+    [Fact]
+    public void Test_DocValue_To_Int(){
+        DocValue doc = new DocValue(123);
+        int a = doc;
+
+        Assert.Equal(doc.AsInt32, a);
+    }
+
+    #endregion
 }
