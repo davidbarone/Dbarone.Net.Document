@@ -11,7 +11,7 @@ namespace Dbarone.Net.Document
     /// <summary>
     /// Specifies collation comparisons for defined culture settings. Default CurrentCulture with IgnoreCase.
     /// </summary>
-    public class Collation : IComparer<DocValue>, IComparer<string>, IEqualityComparer<DocValue>
+    public class Collation : IComparer<ValueDocument>, IComparer<string>, IEqualityComparer<ValueDocument>
     {
         private readonly CompareInfo _compareInfo;
 
@@ -71,17 +71,17 @@ namespace Dbarone.Net.Document
             return result < 0 ? -1 : result > 0 ? +1 : 0;
         }
 
-        public int Compare(DocValue left, DocValue right)
+        public int Compare(ValueDocument left, ValueDocument right)
         {
             return left.CompareTo(right, this);
         }
 
-        public bool Equals(DocValue x, DocValue y)
+        public bool Equals(ValueDocument x, ValueDocument y)
         {
             return this.Compare(x, y) == 0;
         }
 
-        public int GetHashCode(DocValue obj)
+        public int GetHashCode(ValueDocument obj)
         {
             return obj.GetHashCode();
         }

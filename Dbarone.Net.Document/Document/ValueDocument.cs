@@ -10,19 +10,19 @@ namespace Dbarone.Net.Document
     /// <summary>
     /// Represent a simple value used in Document.
     /// </summary>
-    public class DocValue : IComparable<DocValue>, IEquatable<DocValue>
+    public class ValueDocument : IComparable<ValueDocument>, IEquatable<ValueDocument>
     {
         public static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>
         /// Represents a Null type.
         /// </summary>
-        public static DocValue Null = new DocValue(DocType.Null, null);
+        public static ValueDocument Null = new ValueDocument(DocumentType.Null, null);
 
         /// <summary>
         /// Indicate DataType of this value.
         /// </summary>
-        public DocType Type { get; }
+        public DocumentType Type { get; }
 
         /// <summary>
         /// Get internal .NET value object.
@@ -31,147 +31,147 @@ namespace Dbarone.Net.Document
 
         #region Constructors
 
-        public DocValue()
+        public ValueDocument()
         {
-            this.Type = DocType.Null;
+            this.Type = DocumentType.Null;
             this.RawValue = null;
         }
 
-        public DocValue(Boolean value)
+        public ValueDocument(Boolean value)
         {
-            this.Type = DocType.Boolean;
+            this.Type = DocumentType.Boolean;
             this.RawValue = value;
         }
 
-        public DocValue(Byte value)
+        public ValueDocument(Byte value)
         {
-            this.Type = DocType.Byte;
+            this.Type = DocumentType.Byte;
             this.RawValue = value;
         }
 
-        public DocValue(SByte value)
+        public ValueDocument(SByte value)
         {
-            this.Type = DocType.SByte;
+            this.Type = DocumentType.SByte;
             this.RawValue = value;
         }
 
-        public DocValue(char value)
+        public ValueDocument(char value)
         {
-            this.Type = DocType.Char;
+            this.Type = DocumentType.Char;
             this.RawValue = value;
         }
 
-        public DocValue(Int16 value)
+        public ValueDocument(Int16 value)
         {
-            this.Type = DocType.Int16;
+            this.Type = DocumentType.Int16;
             this.RawValue = value;
         }
 
-        public DocValue(UInt16 value)
+        public ValueDocument(UInt16 value)
         {
-            this.Type = DocType.UInt16;
+            this.Type = DocumentType.UInt16;
             this.RawValue = value;
         }
 
-        public DocValue(Int32 value)
+        public ValueDocument(Int32 value)
         {
-            this.Type = DocType.Int32;
+            this.Type = DocumentType.Int32;
             this.RawValue = value;
         }
 
-        public DocValue(UInt32 value)
+        public ValueDocument(UInt32 value)
         {
-            this.Type = DocType.UInt32;
+            this.Type = DocumentType.UInt32;
             this.RawValue = value;
         }
 
-        public DocValue(Single value)
+        public ValueDocument(Single value)
         {
-            this.Type = DocType.Single;
+            this.Type = DocumentType.Single;
             this.RawValue = value;
         }
 
-        public DocValue(Int64 value)
+        public ValueDocument(Int64 value)
         {
-            this.Type = DocType.Int64;
+            this.Type = DocumentType.Int64;
             this.RawValue = value;
         }
 
-        public DocValue(UInt64 value)
+        public ValueDocument(UInt64 value)
         {
-            this.Type = DocType.UInt64;
+            this.Type = DocumentType.UInt64;
             this.RawValue = value;
         }
 
-        public DocValue(DateTime value)
+        public ValueDocument(DateTime value)
         {
-            this.Type = DocType.DateTime;
+            this.Type = DocumentType.DateTime;
             this.RawValue = value;
         }
 
-        public DocValue(Double value)
+        public ValueDocument(Double value)
         {
-            this.Type = DocType.Double;
+            this.Type = DocumentType.Double;
             this.RawValue = value;
         }
 
-        public DocValue(Decimal value)
+        public ValueDocument(Decimal value)
         {
-            this.Type = DocType.Decimal;
+            this.Type = DocumentType.Decimal;
             this.RawValue = value;
         }
 
-        public DocValue(Guid value)
+        public ValueDocument(Guid value)
         {
-            this.Type = DocType.Guid;
+            this.Type = DocumentType.Guid;
             this.RawValue = value;
         }
 
-        public DocValue(String value)
+        public ValueDocument(String value)
         {
-            this.Type = value == null ? DocType.Null : DocType.String;
+            this.Type = value == null ? DocumentType.Null : DocumentType.String;
             this.RawValue = value;
         }
 
-        public DocValue(Byte[] value)
+        public ValueDocument(Byte[] value)
         {
-            this.Type = value == null ? DocType.Null : DocType.Blob;
+            this.Type = value == null ? DocumentType.Null : DocumentType.Blob;
             this.RawValue = value;
         }
 
-        protected DocValue(DocType type, object? rawValue)
+        protected ValueDocument(DocumentType type, object? rawValue)
         {
             this.Type = type;
             this.RawValue = rawValue;
         }
 
-        public DocValue(object? value)
+        public ValueDocument(object? value)
         {
             this.RawValue = value;
 
-            if (value == null) this.Type = DocType.Null;
-            else if (value is Boolean) this.Type = DocType.Boolean;
-            else if (value is Byte) this.Type = DocType.Byte;
-            else if (value is SByte) this.Type = DocType.SByte;
-            else if (value is Char) this.Type = DocType.Char;
-            else if (value is Int16) this.Type = DocType.Int16;
-            else if (value is UInt16) this.Type = DocType.Int16;
-            else if (value is Int32) this.Type = DocType.Int32;
-            else if (value is UInt32) this.Type = DocType.Int32;
-            else if (value is Single) this.Type = DocType.Single;
-            else if (value is Int64) this.Type = DocType.Int64;
-            else if (value is UInt64) this.Type = DocType.UInt64;
-            else if (value is DateTime) this.Type = DocType.DateTime;
-            else if (value is Double) this.Type = DocType.Double;
-            else if (value is Decimal) this.Type = DocType.Decimal;
-            else if (value is Guid) this.Type = DocType.Guid;
-            else if (value is String) this.Type = DocType.String;
-            else if (value is IDictionary<string, DocValue>) this.Type = DocType.Document;
-            else if (value is IList<DocValue>) this.Type = DocType.Array;
-            else if (value is Byte[]) this.Type = DocType.Blob;
-            else if (value is DocValue)
+            if (value == null) this.Type = DocumentType.Null;
+            else if (value is Boolean) this.Type = DocumentType.Boolean;
+            else if (value is Byte) this.Type = DocumentType.Byte;
+            else if (value is SByte) this.Type = DocumentType.SByte;
+            else if (value is Char) this.Type = DocumentType.Char;
+            else if (value is Int16) this.Type = DocumentType.Int16;
+            else if (value is UInt16) this.Type = DocumentType.Int16;
+            else if (value is Int32) this.Type = DocumentType.Int32;
+            else if (value is UInt32) this.Type = DocumentType.Int32;
+            else if (value is Single) this.Type = DocumentType.Single;
+            else if (value is Int64) this.Type = DocumentType.Int64;
+            else if (value is UInt64) this.Type = DocumentType.UInt64;
+            else if (value is DateTime) this.Type = DocumentType.DateTime;
+            else if (value is Double) this.Type = DocumentType.Double;
+            else if (value is Decimal) this.Type = DocumentType.Decimal;
+            else if (value is Guid) this.Type = DocumentType.Guid;
+            else if (value is String) this.Type = DocumentType.String;
+            else if (value is IDictionary<string, ValueDocument>) this.Type = DocumentType.Document;
+            else if (value is IList<ValueDocument>) this.Type = DocumentType.Array;
+            else if (value is Byte[]) this.Type = DocumentType.Blob;
+            else if (value is ValueDocument)
             {
-                var v = (DocValue)value;
+                var v = (ValueDocument)value;
                 this.Type = v.Type;
                 this.RawValue = v.RawValue;
             }
@@ -184,29 +184,29 @@ namespace Dbarone.Net.Document
                 // test first for dictionary (because IDictionary implements IEnumerable)
                 if (dictionary != null)
                 {
-                    var dict = new Dictionary<string, DocValue>();
+                    var dict = new Dictionary<string, ValueDocument>();
 
                     foreach (var key in dictionary.Keys)
                     {
                         if (key != null && key.ToString() != null)
                         {
-                            dict.Add(key.ToString()!, new DocValue((dictionary[key])));
+                            dict.Add(key.ToString()!, new ValueDocument((dictionary[key])));
                         }
                     }
 
-                    this.Type = DocType.Document;
+                    this.Type = DocumentType.Document;
                     this.RawValue = dict;
                 }
                 else if (enumerable != null)
                 {
-                    var list = new List<DocValue>();
+                    var list = new List<ValueDocument>();
 
                     foreach (var x in enumerable)
                     {
-                        list.Add(new DocValue(x));
+                        list.Add(new ValueDocument(x));
                     }
 
-                    this.Type = DocType.Array;
+                    this.Type = DocumentType.Array;
                     this.RawValue = list;
                 }
                 else
@@ -223,7 +223,7 @@ namespace Dbarone.Net.Document
         /// <summary>
         /// Get / set a field for document. Fields are case sensitive. Only permitted for DataType.Document.
         /// </summary>
-        public virtual DocValue this[string name]
+        public virtual ValueDocument this[string name]
         {
             get => throw new InvalidOperationException($"Cannot access non-document type value on type: ${this.Type}.");
             set => throw new InvalidOperationException($"Cannot access non-document type value on type: ${this.Type}.");
@@ -232,7 +232,7 @@ namespace Dbarone.Net.Document
         /// <summary>
         /// Get / set value in array by position. Only permitted for DataType.Array
         /// </summary>
-        public virtual DocValue this[int index]
+        public virtual ValueDocument this[int index]
         {
             get => throw new InvalidOperationException($"Cannot access non-array type value on type: ${this.Type}.");
             set => throw new InvalidOperationException($"Cannot access non-array type value on type: ${this.Type}.");
@@ -242,9 +242,9 @@ namespace Dbarone.Net.Document
 
         #region Convert types
 
-        public DocArray AsArray => new DocArray(this.RawValue as IList<DocValue>);
+        public ArrayDocument AsArray => new ArrayDocument(this.RawValue as IList<ValueDocument>);
 
-        public DocDocument AsDocument => this as DocDocument;
+        public DictionaryDocument AsDocument => this as DictionaryDocument;
 
         public Byte[] AsBinary => this.RawValue as Byte[];
 
@@ -280,260 +280,260 @@ namespace Dbarone.Net.Document
 
         #region IsTypes
 
-        public bool IsNull => this.Type == DocType.Null;
+        public bool IsNull => this.Type == DocumentType.Null;
 
-        public bool IsBoolean => this.Type == DocType.Boolean;
+        public bool IsBoolean => this.Type == DocumentType.Boolean;
 
-        public bool IsByte => this.Type == DocType.Byte;
+        public bool IsByte => this.Type == DocumentType.Byte;
 
-        public bool IsSByte => this.Type == DocType.SByte;
+        public bool IsSByte => this.Type == DocumentType.SByte;
 
-        public bool IsChar => this.Type == DocType.Char;
+        public bool IsChar => this.Type == DocumentType.Char;
 
-        public bool IsInt16 => this.Type == DocType.Int16;
+        public bool IsInt16 => this.Type == DocumentType.Int16;
 
-        public bool IsUInt16 => this.Type == DocType.UInt16;
+        public bool IsUInt16 => this.Type == DocumentType.UInt16;
 
-        public bool IsInt32 => this.Type == DocType.Int32;
+        public bool IsInt32 => this.Type == DocumentType.Int32;
 
-        public bool IsUInt32 => this.Type == DocType.UInt32;
+        public bool IsUInt32 => this.Type == DocumentType.UInt32;
 
-        public bool IsSingle => this.Type == DocType.Single;
+        public bool IsSingle => this.Type == DocumentType.Single;
 
-        public bool IsInt64 => this.Type == DocType.Int64;
+        public bool IsInt64 => this.Type == DocumentType.Int64;
 
-        public bool IsUInt64 => this.Type == DocType.UInt64;
+        public bool IsUInt64 => this.Type == DocumentType.UInt64;
 
-        public bool IsDateTime => this.Type == DocType.DateTime;
+        public bool IsDateTime => this.Type == DocumentType.DateTime;
 
-        public bool IsDouble => this.Type == DocType.Double;
+        public bool IsDouble => this.Type == DocumentType.Double;
 
-        public bool IsDecimal => this.Type == DocType.Decimal;
+        public bool IsDecimal => this.Type == DocumentType.Decimal;
 
-        public bool IsGuid => this.Type == DocType.Guid;
+        public bool IsGuid => this.Type == DocumentType.Guid;
 
         public bool IsNumber => this.IsByte || this.IsSByte || this.IsInt16 || this.IsUInt16 || this.IsInt32 || this.IsUInt32 || this.IsInt64 || this.IsUInt64 || this.IsSingle || this.IsDouble || this.IsDecimal;
 
-        public bool IsBlob => this.Type == DocType.Blob;
+        public bool IsBlob => this.Type == DocumentType.Blob;
 
-        public bool IsArray => this.Type == DocType.Array;
+        public bool IsArray => this.Type == DocumentType.Array;
 
-        public bool IsDocument => this.Type == DocType.Document;
+        public bool IsDocument => this.Type == DocumentType.Document;
 
-        public bool IsString => this.Type == DocType.String;
+        public bool IsString => this.Type == DocumentType.String;
 
         #endregion
 
         #region Implicit Ctor
 
         // Boolean
-        public static implicit operator Boolean(DocValue value)
+        public static implicit operator Boolean(ValueDocument value)
         {
             return (Boolean)value.RawValue;
         }
 
         // Boolean
-        public static implicit operator DocValue(Boolean value)
+        public static implicit operator ValueDocument(Boolean value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // Byte
-        public static implicit operator Byte(DocValue value)
+        public static implicit operator Byte(ValueDocument value)
         {
             return (Byte)value.RawValue;
         }
 
         // Byte
-        public static implicit operator DocValue(Byte value)
+        public static implicit operator ValueDocument(Byte value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // SByte
-        public static implicit operator SByte(DocValue value)
+        public static implicit operator SByte(ValueDocument value)
         {
             return (SByte)value.RawValue;
         }
 
         // SByte
-        public static implicit operator DocValue(SByte value)
+        public static implicit operator ValueDocument(SByte value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // Char
-        public static implicit operator Char(DocValue value)
+        public static implicit operator Char(ValueDocument value)
         {
             return (Char)value.RawValue;
         }
 
         // Char
-        public static implicit operator DocValue(Char value)
+        public static implicit operator ValueDocument(Char value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // Int16
-        public static implicit operator Int16(DocValue value)
+        public static implicit operator Int16(ValueDocument value)
         {
             return (Int16)value.RawValue;
         }
 
         // Int16
-        public static implicit operator DocValue(Int16 value)
+        public static implicit operator ValueDocument(Int16 value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // UInt16
-        public static implicit operator UInt16(DocValue value)
+        public static implicit operator UInt16(ValueDocument value)
         {
             return (UInt16)value.RawValue;
         }
 
         // UInt16
-        public static implicit operator DocValue(UInt16 value)
+        public static implicit operator ValueDocument(UInt16 value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // Int32
-        public static implicit operator Int32(DocValue value)
+        public static implicit operator Int32(ValueDocument value)
         {
             return (Int32)value.RawValue;
         }
 
         // Int32
-        public static implicit operator DocValue(Int32 value)
+        public static implicit operator ValueDocument(Int32 value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // UInt32
-        public static implicit operator UInt32(DocValue value)
+        public static implicit operator UInt32(ValueDocument value)
         {
             return (UInt32)value.RawValue;
         }
 
         // UInt32
-        public static implicit operator DocValue(UInt32 value)
+        public static implicit operator ValueDocument(UInt32 value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // Single
-        public static implicit operator Single(DocValue value)
+        public static implicit operator Single(ValueDocument value)
         {
             return (Single)value.RawValue;
         }
 
         // Single
-        public static implicit operator DocValue(Single value)
+        public static implicit operator ValueDocument(Single value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // Int64
-        public static implicit operator Int64(DocValue value)
+        public static implicit operator Int64(ValueDocument value)
         {
             return (Int64)value.RawValue;
         }
 
         // Int64
-        public static implicit operator DocValue(Int64 value)
+        public static implicit operator ValueDocument(Int64 value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // UInt64
-        public static implicit operator UInt64(DocValue value)
+        public static implicit operator UInt64(ValueDocument value)
         {
             return (UInt64)value.RawValue;
         }
 
         // UInt64
-        public static implicit operator DocValue(UInt64 value)
+        public static implicit operator ValueDocument(UInt64 value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // DateTime
-        public static implicit operator DateTime(DocValue value)
+        public static implicit operator DateTime(ValueDocument value)
         {
             return (DateTime)value.RawValue;
         }
 
         // DateTime
-        public static implicit operator DocValue(DateTime value)
+        public static implicit operator ValueDocument(DateTime value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // Double
-        public static implicit operator Double(DocValue value)
+        public static implicit operator Double(ValueDocument value)
         {
             return (Double)value.RawValue;
         }
 
         // Double
-        public static implicit operator DocValue(Double value)
+        public static implicit operator ValueDocument(Double value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // Decimal
-        public static implicit operator Decimal(DocValue value)
+        public static implicit operator Decimal(ValueDocument value)
         {
             return (Decimal)value.RawValue;
         }
 
         // Decimal
-        public static implicit operator DocValue(Decimal value)
+        public static implicit operator ValueDocument(Decimal value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // Guid
-        public static implicit operator Guid(DocValue value)
+        public static implicit operator Guid(ValueDocument value)
         {
             return (Guid)value.RawValue;
         }
 
         // Guid
-        public static implicit operator DocValue(Guid value)
+        public static implicit operator ValueDocument(Guid value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // String
-        public static implicit operator String(DocValue value)
+        public static implicit operator String(ValueDocument value)
         {
             return (String)value.RawValue;
         }
 
         // String
-        public static implicit operator DocValue(String value)
+        public static implicit operator ValueDocument(String value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // Binary
-        public static implicit operator Byte[](DocValue value)
+        public static implicit operator Byte[](ValueDocument value)
         {
             return (Byte[])value.RawValue;
         }
 
         // Binary
-        public static implicit operator DocValue(Byte[] value)
+        public static implicit operator ValueDocument(Byte[] value)
         {
-            return new DocValue(value);
+            return new ValueDocument(value);
         }
 
         // +
-        public static DocValue operator +(DocValue left, DocValue right)
+        public static ValueDocument operator +(ValueDocument left, ValueDocument right)
         {
-            if (!left.IsNumber || !right.IsNumber) return DocValue.Null;
+            if (!left.IsNumber || !right.IsNumber) return ValueDocument.Null;
 
             if (left.IsInt32 && right.IsInt32) return left.AsInt32 + right.AsInt32;
             if (left.IsInt64 && right.IsInt64) return left.AsInt64 + right.AsInt64;
@@ -541,18 +541,18 @@ namespace Dbarone.Net.Document
             if (left.IsDecimal && right.IsDecimal) return left.AsDecimal + right.AsDecimal;
 
             var result = left.AsDecimal + right.AsDecimal;
-            var type = (DocType)Math.Max((int)left.Type, (int)right.Type);
+            var type = (DocumentType)Math.Max((int)left.Type, (int)right.Type);
 
             return
-                type == DocType.Int64 ? new DocValue((Int64)result) :
-                type == DocType.Double ? new DocValue((Double)result) :
-                new DocValue(result);
+                type == DocumentType.Int64 ? new ValueDocument((Int64)result) :
+                type == DocumentType.Double ? new ValueDocument((Double)result) :
+                new ValueDocument(result);
         }
 
         // -
-        public static DocValue operator -(DocValue left, DocValue right)
+        public static ValueDocument operator -(ValueDocument left, ValueDocument right)
         {
-            if (!left.IsNumber || !right.IsNumber) return DocValue.Null;
+            if (!left.IsNumber || !right.IsNumber) return ValueDocument.Null;
 
             if (left.IsInt32 && right.IsInt32) return left.AsInt32 - right.AsInt32;
             if (left.IsInt64 && right.IsInt64) return left.AsInt64 - right.AsInt64;
@@ -560,18 +560,18 @@ namespace Dbarone.Net.Document
             if (left.IsDecimal && right.IsDecimal) return left.AsDecimal - right.AsDecimal;
 
             var result = left.AsDecimal - right.AsDecimal;
-            var type = (DocType)Math.Max((int)left.Type, (int)right.Type);
+            var type = (DocumentType)Math.Max((int)left.Type, (int)right.Type);
 
             return
-                type == DocType.Int64 ? new DocValue((Int64)result) :
-                type == DocType.Double ? new DocValue((Double)result) :
-                new DocValue(result);
+                type == DocumentType.Int64 ? new ValueDocument((Int64)result) :
+                type == DocumentType.Double ? new ValueDocument((Double)result) :
+                new ValueDocument(result);
         }
 
         // *
-        public static DocValue operator *(DocValue left, DocValue right)
+        public static ValueDocument operator *(ValueDocument left, ValueDocument right)
         {
-            if (!left.IsNumber || !right.IsNumber) return DocValue.Null;
+            if (!left.IsNumber || !right.IsNumber) return ValueDocument.Null;
 
             if (left.IsInt32 && right.IsInt32) return left.AsInt32 * right.AsInt32;
             if (left.IsInt64 && right.IsInt64) return left.AsInt64 * right.AsInt64;
@@ -579,18 +579,18 @@ namespace Dbarone.Net.Document
             if (left.IsDecimal && right.IsDecimal) return left.AsDecimal * right.AsDecimal;
 
             var result = left.AsDecimal * right.AsDecimal;
-            var type = (DocType)Math.Max((int)left.Type, (int)right.Type);
+            var type = (DocumentType)Math.Max((int)left.Type, (int)right.Type);
 
             return
-                type == DocType.Int64 ? new DocValue((Int64)result) :
-                type == DocType.Double ? new DocValue((Double)result) :
-                new DocValue(result);
+                type == DocumentType.Int64 ? new ValueDocument((Int64)result) :
+                type == DocumentType.Double ? new ValueDocument((Double)result) :
+                new ValueDocument(result);
         }
 
         // /
-        public static DocValue operator /(DocValue left, DocValue right)
+        public static ValueDocument operator /(ValueDocument left, ValueDocument right)
         {
-            if (!left.IsNumber || !right.IsNumber) return DocValue.Null;
+            if (!left.IsNumber || !right.IsNumber) return ValueDocument.Null;
             if (left.IsDecimal || right.IsDecimal) return left.AsDecimal / right.AsDecimal;
 
             return left.AsDouble / right.AsDouble;
@@ -605,12 +605,12 @@ namespace Dbarone.Net.Document
 
         #region IComparable<BsonValue>, IEquatable<BsonValue>
 
-        public virtual int CompareTo(DocValue other)
+        public virtual int CompareTo(ValueDocument other)
         {
             return this.CompareTo(other, Collation.Binary);
         }
 
-        public virtual int CompareTo(DocValue other, Collation collation)
+        public virtual int CompareTo(ValueDocument other, Collation collation)
         {
             // first, test if types are different
             if (this.Type != other.Type)
@@ -632,24 +632,24 @@ namespace Dbarone.Net.Document
             // for both values with same data type just compare
             switch (this.Type)
             {
-                case DocType.Null:
+                case DocumentType.Null:
                     return 0;
 
-                case DocType.Int32: return this.AsInt32.CompareTo(other.AsInt32);
-                case DocType.Int64: return this.AsInt64.CompareTo(other.AsInt64);
-                case DocType.Double: return this.AsDouble.CompareTo(other.AsDouble);
-                case DocType.Decimal: return this.AsDecimal.CompareTo(other.AsDecimal);
+                case DocumentType.Int32: return this.AsInt32.CompareTo(other.AsInt32);
+                case DocumentType.Int64: return this.AsInt64.CompareTo(other.AsInt64);
+                case DocumentType.Double: return this.AsDouble.CompareTo(other.AsDouble);
+                case DocumentType.Decimal: return this.AsDecimal.CompareTo(other.AsDecimal);
 
-                case DocType.String: return collation.Compare(this.AsString, other.AsString);
+                case DocumentType.String: return collation.Compare(this.AsString, other.AsString);
 
-                case DocType.Document: return this.AsDocument.CompareTo(other);
-                case DocType.Array: return this.AsArray.CompareTo(other);
+                case DocumentType.Document: return this.AsDocument.CompareTo(other);
+                case DocumentType.Array: return this.AsArray.CompareTo(other);
 
-                case DocType.Blob: return this.BinaryCompare(this.AsBinary, other.AsBinary);
-                case DocType.Guid: return this.AsGuid.CompareTo(other.AsGuid);
+                case DocumentType.Blob: return this.BinaryCompare(this.AsBinary, other.AsBinary);
+                case DocumentType.Guid: return this.AsGuid.CompareTo(other.AsGuid);
 
-                case DocType.Boolean: return this.AsBoolean.CompareTo(other.AsBoolean);
-                case DocType.DateTime:
+                case DocumentType.Boolean: return this.AsBoolean.CompareTo(other.AsBoolean);
+                case DocumentType.DateTime:
                     var d0 = this.AsDateTime;
                     var d1 = other.AsDateTime;
                     if (d0.Kind != DateTimeKind.Utc) d0 = d0.ToUniversalTime();
@@ -677,7 +677,7 @@ namespace Dbarone.Net.Document
             return 1;
         }
 
-        public bool Equals(DocValue other)
+        public bool Equals(ValueDocument other)
         {
             return this.CompareTo(other) == 0;
         }
@@ -686,7 +686,7 @@ namespace Dbarone.Net.Document
 
         #region Operators
 
-        public static bool operator ==(DocValue lhs, DocValue rhs)
+        public static bool operator ==(ValueDocument lhs, ValueDocument rhs)
         {
             if (object.ReferenceEquals(lhs, null)) return object.ReferenceEquals(rhs, null);
             if (object.ReferenceEquals(rhs, null)) return false; // don't check type because sometimes different types can be ==
@@ -694,34 +694,34 @@ namespace Dbarone.Net.Document
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(DocValue lhs, DocValue rhs)
+        public static bool operator !=(ValueDocument lhs, ValueDocument rhs)
         {
             return !(lhs == rhs);
         }
 
-        public static bool operator >=(DocValue lhs, DocValue rhs)
+        public static bool operator >=(ValueDocument lhs, ValueDocument rhs)
         {
             return lhs.CompareTo(rhs) >= 0;
         }
 
-        public static bool operator >(DocValue lhs, DocValue rhs)
+        public static bool operator >(ValueDocument lhs, ValueDocument rhs)
         {
             return lhs.CompareTo(rhs) > 0;
         }
 
-        public static bool operator <(DocValue lhs, DocValue rhs)
+        public static bool operator <(ValueDocument lhs, ValueDocument rhs)
         {
             return lhs.CompareTo(rhs) < 0;
         }
 
-        public static bool operator <=(DocValue lhs, DocValue rhs)
+        public static bool operator <=(ValueDocument lhs, ValueDocument rhs)
         {
             return lhs.CompareTo(rhs) <= 0;
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is DocValue other)
+            if (obj is ValueDocument other)
             {
                 return this.Equals(other);
             }
@@ -752,32 +752,32 @@ namespace Dbarone.Net.Document
         {
             switch (this.Type)
             {
-                case DocType.Null: return 0;
+                case DocumentType.Null: return 0;
 
-                case DocType.Boolean:
-                case DocType.SByte:
-                case DocType.Byte: return 1;
+                case DocumentType.Boolean:
+                case DocumentType.SByte:
+                case DocumentType.Byte: return 1;
 
-                case DocType.Char:
-                case DocType.Int16:
-                case DocType.UInt16: return 2;
+                case DocumentType.Char:
+                case DocumentType.Int16:
+                case DocumentType.UInt16: return 2;
 
-                case DocType.Int32:
-                case DocType.UInt32:
-                case DocType.Single: return 4;
+                case DocumentType.Int32:
+                case DocumentType.UInt32:
+                case DocumentType.Single: return 4;
 
-                case DocType.Int64:
-                case DocType.UInt64:
-                case DocType.DateTime:
-                case DocType.Double: return 8;
+                case DocumentType.Int64:
+                case DocumentType.UInt64:
+                case DocumentType.DateTime:
+                case DocumentType.Double: return 8;
 
-                case DocType.Decimal:
-                case DocType.Guid: return 16;
+                case DocumentType.Decimal:
+                case DocumentType.Guid: return 16;
 
-                case DocType.String: return Encoding.UTF8.GetByteCount(this.AsString);
-                case DocType.Blob: return this.AsBinary.Length;
-                case DocType.Document: return this.AsDocument.GetBytesCount(recalc);
-                case DocType.Array: return this.AsArray.GetBytesCount(recalc);
+                case DocumentType.String: return Encoding.UTF8.GetByteCount(this.AsString);
+                case DocumentType.Blob: return this.AsBinary.Length;
+                case DocumentType.Document: return this.AsDocument.GetBytesCount(recalc);
+                case DocumentType.Array: return this.AsArray.GetBytesCount(recalc);
             }
 
             throw new ArgumentException();
@@ -789,10 +789,10 @@ namespace Dbarone.Net.Document
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
         /// <returns>Returns the byte count for an element.</returns>
-        protected int GetBytesCountElement(string key, DocValue value)
+        protected int GetBytesCountElement(string key, ValueDocument value)
         {
             // check if data type is variant
-            var variant = value.Type == DocType.String || value.Type == DocType.Blob || value.Type == DocType.Guid;
+            var variant = value.Type == DocumentType.String || value.Type == DocumentType.Blob || value.Type == DocumentType.Guid;
 
             return
                 1 + // element type

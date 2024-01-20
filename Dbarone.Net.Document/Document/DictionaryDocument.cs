@@ -9,15 +9,15 @@ using Dbarone.Net.Extensions;
 namespace Dbarone.Net.Document
 {
     /// <summary>
-    /// Represents a document as a dictionary of string / <see cref="DocValue"/> pairs.
+    /// Represents a document as a dictionary of string / <see cref="ValueDocument"/> pairs.
     /// </summary>
-    public class DocDocument : DocValue, IDictionary<string, DocValue>
+    public class DictionaryDocument : ValueDocument, IDictionary<string, ValueDocument>
     {
         /// <summary>
         /// Creates an empty document.
         /// </summary>
-        public DocDocument()
-            : base(DocType.Document, new Dictionary<string, DocValue>(StringComparer.OrdinalIgnoreCase))
+        public DictionaryDocument()
+            : base(DocumentType.Document, new Dictionary<string, ValueDocument>(StringComparer.OrdinalIgnoreCase))
         {
         }
 
@@ -26,7 +26,7 @@ namespace Dbarone.Net.Document
         /// </summary>
         /// <param name="dict">The dictionary containing the values.</param>
         /// <exception cref="ArgumentNullException">Throws an error if a null dictionary value is passed in.</exception>
-        public DocDocument(ConcurrentDictionary<string, DocValue> dict)
+        public DictionaryDocument(ConcurrentDictionary<string, ValueDocument> dict)
             : this()
         {
             if (dict == null) throw new ArgumentNullException(nameof(dict));
@@ -42,7 +42,7 @@ namespace Dbarone.Net.Document
         /// </summary>
         /// <param name="dict">The dictionary containing the values.</param>
         /// <exception cref="ArgumentNullException">Throws an error if a null dictionary value is passed in.</exception>
-        public DocDocument(IDictionary<string, DocValue> dict)
+        public DictionaryDocument(IDictionary<string, ValueDocument> dict)
             : this()
         {
             if (dict == null) throw new ArgumentNullException(nameof(dict));
@@ -56,29 +56,29 @@ namespace Dbarone.Net.Document
         /// <summary>
         /// Returns the raw value of the document, as an IDictionary.
         /// </summary>
-        public new IDictionary<string, DocValue> RawValue => base.RawValue as IDictionary<string, DocValue>;
+        public new IDictionary<string, ValueDocument> RawValue => base.RawValue as IDictionary<string, ValueDocument>;
 
         /// <summary>
         /// Get / set a field for document. Fields are case sensitive
         /// </summary>
-        public override DocValue this[string key]
+        public override ValueDocument this[string key]
         {
             get
             {
-                return this.RawValue.GetOrDefault(key, DocValue.Null);
+                return this.RawValue.GetOrDefault(key, ValueDocument.Null);
             }
             set
             {
-                this.RawValue[key] = value ?? DocValue.Null;
+                this.RawValue[key] = value ?? ValueDocument.Null;
             }
         }
 
         #region CompareTo
 
-        public override int CompareTo(DocValue other)
+        public override int CompareTo(ValueDocument other)
         {
             // if types are different, returns sort type order
-            if (other.Type != DocType.Document) return this.Type.CompareTo(other.Type);
+            if (other.Type != DocumentType.Document) return this.Type.CompareTo(other.Type);
 
             var thisKeys = this.Keys.ToArray();
             var thisLength = thisKeys.Length;
@@ -109,7 +109,7 @@ namespace Dbarone.Net.Document
 
         public ICollection<string> Keys => this.RawValue.Keys;
 
-        public ICollection<DocValue> Values => this.RawValue.Values;
+        public ICollection<ValueDocument> Values => this.RawValue.Values;
 
         public int Count => this.RawValue.Count;
 
@@ -121,11 +121,11 @@ namespace Dbarone.Net.Document
         /// Get all document elements - Return "_id" as first of all (if exists)
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<KeyValuePair<string, DocValue>> GetElements()
+        public IEnumerable<KeyValuePair<string, ValueDocument>> GetElements()
         {
             if(this.RawValue.TryGetValue("_id", out var id))
             {
-                yield return new KeyValuePair<string, DocValue>("_id", id);
+                yield return new KeyValuePair<string, ValueDocument>("_id", id);
             }
 
             foreach(var item in this.RawValue.Where(x => x.Key != "_id"))
@@ -139,7 +139,7 @@ namespace Dbarone.Net.Document
         /// </summary>
         /// <param name="key">The new member key.</param>
         /// <param name="value">The new member value.</param>
-        public void Add(string key, DocValue value) => this.RawValue.Add(key, value ?? DocValue.Null);
+        public void Add(string key, ValueDocument value) => this.RawValue.Add(key, value ?? ValueDocument.Null);
 
         /// <summary>
         /// Removes a member from the document.
@@ -149,24 +149,24 @@ namespace Dbarone.Net.Document
 
         public void Clear() => this.RawValue.Clear();
 
-        public bool TryGetValue(string key, out DocValue value) => this.RawValue.TryGetValue(key, out value);
+        public bool TryGetValue(string key, out ValueDocument value) => this.RawValue.TryGetValue(key, out value);
 
-        public void Add(KeyValuePair<string, DocValue> item) => this.Add(item.Key, item.Value);
+        public void Add(KeyValuePair<string, ValueDocument> item) => this.Add(item.Key, item.Value);
 
-        public bool Contains(KeyValuePair<string, DocValue> item) => this.RawValue.Contains(item);
+        public bool Contains(KeyValuePair<string, ValueDocument> item) => this.RawValue.Contains(item);
 
-        public bool Remove(KeyValuePair<string, DocValue> item) => this.Remove(item.Key);
+        public bool Remove(KeyValuePair<string, ValueDocument> item) => this.Remove(item.Key);
 
-        public IEnumerator<KeyValuePair<string, DocValue>> GetEnumerator() => this.RawValue.GetEnumerator();
+        public IEnumerator<KeyValuePair<string, ValueDocument>> GetEnumerator() => this.RawValue.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => this.RawValue.GetEnumerator();
 
-        public void CopyTo(KeyValuePair<string, DocValue>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<string, ValueDocument>[] array, int arrayIndex)
         {
-            ((ICollection<KeyValuePair<string, DocValue>>)this.RawValue).CopyTo(array, arrayIndex);
+            ((ICollection<KeyValuePair<string, ValueDocument>>)this.RawValue).CopyTo(array, arrayIndex);
         }
 
-        public void CopyTo(DocDocument other)
+        public void CopyTo(DictionaryDocument other)
         {
             foreach(var element in this)
             {

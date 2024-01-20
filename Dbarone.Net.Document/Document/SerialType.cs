@@ -12,7 +12,7 @@ using Dbarone.Net.Document;
 /// Serial Type     Data Type
 /// ===========     =========
 ///
-/// Fixed Width DocTypes
+/// Fixed Width DocumentTypes
 /// 
 /// 0               NULL value
 /// 1               Boolean
@@ -43,9 +43,9 @@ using Dbarone.Net.Document;
 public class SerialType
 {
     /// <summary>
-    /// The DocType of the value.
+    /// The DocumentType of the value.
     /// </summary>
-    public DocType DocType { get; set; }
+    public DocumentType DocumentType { get; set; }
 
     /// <summary>
     /// Byte length of the data if string or blob.
@@ -61,47 +61,47 @@ public class SerialType
         if (value.Value < VariableStart)
         {
             // Fixed-width type
-            this.DocType = (DocType)value.Value;
+            this.DocumentType = (DocumentType)value.Value;
             this.Length = null;
         }
         else if (value.Value % 5 == 0)
         {
             // array
-            this.DocType = DocType.Array;
+            this.DocumentType = DocumentType.Array;
             this.Length = ((int)value.Value - ((int)value.Value % 5) - VariableStart) / 5;
         }
         else if (value.Value % 5 == 1)
         {
             // blob
-            this.DocType = DocType.Blob;
+            this.DocumentType = DocumentType.Blob;
             this.Length = ((int)value.Value - ((int)value.Value % 5) - VariableStart) / 5;
         }
         else if (value.Value % 5 == 2)
         {
             // string
-            this.DocType = DocType.String;
+            this.DocumentType = DocumentType.String;
             this.Length = ((int)value.Value - ((int)value.Value % 5) - VariableStart) / 5;
         }
         else if (value.Value % 5 == 3)
         {
             // document
-            this.DocType = DocType.Document;
+            this.DocumentType = DocumentType.Document;
             this.Length = ((int)value.Value - ((int)value.Value % 5) - VariableStart) / 5;
         }
         else if (value.Value % 5 == 4)
         {
             // VarInt
-            this.DocType = DocType.VarInt;
+            this.DocumentType = DocumentType.VarInt;
             this.Length = ((int)value.Value - ((int)value.Value % 5) - VariableStart) / 5;
         }
     }
 
-    public SerialType(DocType docType, int? length = null)
+    public SerialType(DocumentType DocumentType, int? length = null)
     {
-        this.DocType = docType;
+        this.DocumentType = DocumentType;
         this.Length = length;
 
-        if (docType == DocType.Array)
+        if (DocumentType == DocumentType.Array)
         {
             if (length == null)
             {
@@ -109,7 +109,7 @@ public class SerialType
             }
             this.Value = VariableStart + (length.Value * 5) + 0;
         }
-        else if (docType == DocType.Blob)
+        else if (DocumentType == DocumentType.Blob)
         {
             if (length == null)
             {
@@ -117,7 +117,7 @@ public class SerialType
             }
             this.Value = VariableStart + (length.Value * 5) + 1;
         }
-        else if (docType == DocType.String)
+        else if (DocumentType == DocumentType.String)
         {
             if (length == null)
             {
@@ -125,7 +125,7 @@ public class SerialType
             }
             this.Value = VariableStart + (length.Value * 5) + 2;
         }
-        else if (docType == DocType.Document)
+        else if (DocumentType == DocumentType.Document)
         {
             if (length == null)
             {
@@ -133,7 +133,7 @@ public class SerialType
             }
             this.Value = VariableStart + (length.Value * 5) + 3;
         }
-        else if (docType == DocType.VarInt)
+        else if (DocumentType == DocumentType.VarInt)
         {
             if (length == null)
             {
@@ -141,9 +141,9 @@ public class SerialType
             }
             this.Value = VariableStart + (length.Value * 5) + 4;
         }
-        else if ((int)docType < VariableStart)
+        else if ((int)DocumentType < VariableStart)
         {
-            this.Value = (int)docType;
+            this.Value = (int)DocumentType;
         }
         else
         {
