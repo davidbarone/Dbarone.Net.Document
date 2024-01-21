@@ -8,174 +8,174 @@ public class DocTests
     #region Ctor tests
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Null()
+    public void Test_DocumentValue_Ctor_Null()
     {
-        ValueDocument ValueDocument = new ValueDocument();
-        Assert.Equal(null, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Null, ValueDocument.Type);
+        DocumentValue DocumentValue = new DocumentValue();
+        Assert.Equal(null, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Null, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Boolean()
+    public void Test_DocumentValue_Ctor_Boolean()
     {
         Boolean boolValue = true;
-        ValueDocument ValueDocument = boolValue;
-        Assert.Equal(boolValue, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Boolean, ValueDocument.Type);
+        DocumentValue DocumentValue = boolValue;
+        Assert.Equal(boolValue, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Boolean, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Byte()
+    public void Test_DocumentValue_Ctor_Byte()
     {
         Byte byteValue = Byte.MaxValue;
-        ValueDocument ValueDocument = byteValue;
-        Assert.Equal(byteValue, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Byte, ValueDocument.Type);
+        DocumentValue DocumentValue = byteValue;
+        Assert.Equal(byteValue, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Byte, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_SByte()
+    public void Test_DocumentValue_Ctor_SByte()
     {
         SByte sByteValue = 123;
-        ValueDocument ValueDocument = sByteValue;
-        Assert.Equal(sByteValue, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.SByte, ValueDocument.Type);
+        DocumentValue DocumentValue = sByteValue;
+        Assert.Equal(sByteValue, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.SByte, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Char()
+    public void Test_DocumentValue_Ctor_Char()
     {
         Char charValue = 'a';
-        ValueDocument ValueDocument = charValue;
-        Assert.Equal(charValue, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Char, ValueDocument.Type);
+        DocumentValue DocumentValue = charValue;
+        Assert.Equal(charValue, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Char, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Int16()
+    public void Test_DocumentValue_Ctor_Int16()
     {
         Int16 int16Value = -123;
-        ValueDocument ValueDocument = int16Value;
-        Assert.Equal(int16Value, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Int16, ValueDocument.Type);
+        DocumentValue DocumentValue = int16Value;
+        Assert.Equal(int16Value, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Int16, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_UInt16()
+    public void Test_DocumentValue_Ctor_UInt16()
     {
         UInt16 uInt32Value = 123;
-        ValueDocument ValueDocument = uInt32Value;
-        Assert.Equal(uInt32Value, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.UInt16, ValueDocument.Type);
+        DocumentValue DocumentValue = uInt32Value;
+        Assert.Equal(uInt32Value, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.UInt16, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Int32()
+    public void Test_DocumentValue_Ctor_Int32()
     {
         Int32 int32Value = -123;
-        ValueDocument ValueDocument = int32Value;
-        Assert.Equal(int32Value, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Int32, ValueDocument.Type);
+        DocumentValue DocumentValue = int32Value;
+        Assert.Equal(int32Value, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Int32, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_UInt32()
+    public void Test_DocumentValue_Ctor_UInt32()
     {
         UInt32 uInt32Value = 123;
-        ValueDocument ValueDocument = uInt32Value;
-        Assert.Equal(uInt32Value, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.UInt32, ValueDocument.Type);
+        DocumentValue DocumentValue = uInt32Value;
+        Assert.Equal(uInt32Value, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.UInt32, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Single()
+    public void Test_DocumentValue_Ctor_Single()
     {
         Single singleValue = -123.45f;
-        ValueDocument ValueDocument = singleValue;
-        Assert.Equal(singleValue, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Single, ValueDocument.Type);
+        DocumentValue DocumentValue = singleValue;
+        Assert.Equal(singleValue, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Single, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Int64()
+    public void Test_DocumentValue_Ctor_Int64()
     {
         Int64 int64Value = Int64.MinValue;
-        ValueDocument ValueDocument = int64Value;
-        Assert.Equal(int64Value, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Int64, ValueDocument.Type);
+        DocumentValue DocumentValue = int64Value;
+        Assert.Equal(int64Value, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Int64, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_UInt64()
+    public void Test_DocumentValue_Ctor_UInt64()
     {
         UInt64 uInt64Value = UInt64.MaxValue;
-        ValueDocument ValueDocument = uInt64Value;
-        Assert.Equal(uInt64Value, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.UInt64, ValueDocument.Type);
+        DocumentValue DocumentValue = uInt64Value;
+        Assert.Equal(uInt64Value, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.UInt64, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_DateTime()
+    public void Test_DocumentValue_Ctor_DateTime()
     {
         DateTime datetimeValue = DateTime.Now;
-        ValueDocument ValueDocument = datetimeValue;
-        Assert.Equal(datetimeValue, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.DateTime, ValueDocument.Type);
+        DocumentValue DocumentValue = datetimeValue;
+        Assert.Equal(datetimeValue, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.DateTime, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Double()
+    public void Test_DocumentValue_Ctor_Double()
     {
         Double doubleValue = Double.MinValue;
-        ValueDocument ValueDocument = doubleValue;
-        Assert.Equal(doubleValue, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Double, ValueDocument.Type);
+        DocumentValue DocumentValue = doubleValue;
+        Assert.Equal(doubleValue, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Double, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Decimal()
+    public void Test_DocumentValue_Ctor_Decimal()
     {
         Decimal decimalValue = Decimal.MinValue;
-        ValueDocument ValueDocument = decimalValue;
-        Assert.Equal(decimalValue, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Decimal, ValueDocument.Type);
+        DocumentValue DocumentValue = decimalValue;
+        Assert.Equal(decimalValue, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Decimal, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Guid()
+    public void Test_DocumentValue_Ctor_Guid()
     {
         Guid guidValue = Guid.NewGuid();
-        ValueDocument ValueDocument = guidValue;
-        Assert.Equal(guidValue, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Guid, ValueDocument.Type);
+        DocumentValue DocumentValue = guidValue;
+        Assert.Equal(guidValue, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Guid, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_String()
+    public void Test_DocumentValue_Ctor_String()
     {
         string stringValue = "this is a string";
-        ValueDocument ValueDocument = stringValue;
-        Assert.Equal(stringValue, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.String, ValueDocument.Type);
+        DocumentValue DocumentValue = stringValue;
+        Assert.Equal(stringValue, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.String, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Array()
+    public void Test_DocumentValue_Ctor_Array()
     {
         string[] arrayValue = new string[] { "this is a string", "another string" };
-        ValueDocument ValueDocument = new ValueDocument(arrayValue);
-        Assert.Equal(arrayValue[0], ValueDocument.AsArray[0]);
-        Assert.Equal(arrayValue[1], ValueDocument.AsArray[1]);
-        Assert.Equal(DocumentType.Array, ValueDocument.Type);
+        DocumentValue DocumentValue = new DocumentValue(arrayValue);
+        Assert.Equal(arrayValue[0], DocumentValue.AsArray[0]);
+        Assert.Equal(arrayValue[1], DocumentValue.AsArray[1]);
+        Assert.Equal(DocumentType.Array, DocumentValue.Type);
     }
 
     [Fact]
-    public void Test_ValueDocument_Ctor_Blob()
+    public void Test_DocumentValue_Ctor_Blob()
     {
         byte[] arrayValue = new byte[] { 100, 101, 102, 103, 104, 105 };
-        ValueDocument ValueDocument = arrayValue;
-        Assert.Equal(arrayValue, ValueDocument.RawValue);
-        Assert.Equal(DocumentType.Blob, ValueDocument.Type);
+        DocumentValue DocumentValue = arrayValue;
+        Assert.Equal(arrayValue, DocumentValue.RawValue);
+        Assert.Equal(DocumentType.Blob, DocumentValue.Type);
     }
 
     #endregion
@@ -183,38 +183,38 @@ public class DocTests
     #region Binary Operations
 
     [Fact]
-    public void Test_ValueDocument_Operator_Add()
+    public void Test_DocumentValue_Operator_Add()
     {
-        ValueDocument a = (int)4;
-        ValueDocument b = (int)3;
-        ValueDocument c = a + b;
+        DocumentValue a = (int)4;
+        DocumentValue b = (int)3;
+        DocumentValue c = a + b;
         Assert.Equal(7, (int)c);
     }
 
     [Fact]
-    public void Test_ValueDocument_Operator_Subtract()
+    public void Test_DocumentValue_Operator_Subtract()
     {
-        ValueDocument a = (int)4;
-        ValueDocument b = (int)3;
-        ValueDocument c = a - b;
+        DocumentValue a = (int)4;
+        DocumentValue b = (int)3;
+        DocumentValue c = a - b;
         Assert.Equal(1, (int)c);
     }
 
     [Fact]
-    public void Test_ValueDocument_Operator_Multiply()
+    public void Test_DocumentValue_Operator_Multiply()
     {
-        ValueDocument a = (int)4;
-        ValueDocument b = (int)3;
-        ValueDocument c = a * b;
+        DocumentValue a = (int)4;
+        DocumentValue b = (int)3;
+        DocumentValue c = a * b;
         Assert.Equal(12, (int)c);
     }
 
     [Fact]
-    public void Test_ValueDocument_Operator_Divide()
+    public void Test_DocumentValue_Operator_Divide()
     {
-        ValueDocument a = (int)12;
-        ValueDocument b = (int)3;
-        ValueDocument c = a / b;
+        DocumentValue a = (int)12;
+        DocumentValue b = (int)3;
+        DocumentValue c = a / b;
         Assert.Equal(4, (double)c);
     }
 
@@ -223,50 +223,50 @@ public class DocTests
     #region Comparison Operators
 
     [Fact]
-    public void Test_ValueDocument_Operator_Equals()
+    public void Test_DocumentValue_Operator_Equals()
     {
-        ValueDocument a = (int)4;
-        ValueDocument b = (int)4;
+        DocumentValue a = (int)4;
+        DocumentValue b = (int)4;
         Assert.True(a == b);
     }
 
     [Fact]
-    public void Test_ValueDocument_Operator_NotEquals()
+    public void Test_DocumentValue_Operator_NotEquals()
     {
-        ValueDocument a = (int)4;
-        ValueDocument b = (int)3;
+        DocumentValue a = (int)4;
+        DocumentValue b = (int)3;
         Assert.True(a != b);
     }
 
     [Fact]
-    public void Test_ValueDocument_Operator_Greater()
+    public void Test_DocumentValue_Operator_Greater()
     {
-        ValueDocument a = (int)4;
-        ValueDocument b = (int)3;
+        DocumentValue a = (int)4;
+        DocumentValue b = (int)3;
         Assert.True(a > b);
     }
 
     [Fact]
-    public void Test_ValueDocument_Operator_GreaterEquals()
+    public void Test_DocumentValue_Operator_GreaterEquals()
     {
-        ValueDocument a = (int)3;
-        ValueDocument b = (int)3;
+        DocumentValue a = (int)3;
+        DocumentValue b = (int)3;
         Assert.True(a >= b);
     }
 
     [Fact]
-    public void Test_ValueDocument_Operator_Less()
+    public void Test_DocumentValue_Operator_Less()
     {
-        ValueDocument a = (int)4;
-        ValueDocument b = (int)3;
+        DocumentValue a = (int)4;
+        DocumentValue b = (int)3;
         Assert.True(b < a);
     }
 
     [Fact]
-    public void Test_ValueDocument_Operator_LessEquals()
+    public void Test_DocumentValue_Operator_LessEquals()
     {
-        ValueDocument a = (int)3;
-        ValueDocument b = (int)3;
+        DocumentValue a = (int)3;
+        DocumentValue b = (int)3;
         Assert.True(b <= a);
     }
 
@@ -275,9 +275,9 @@ public class DocTests
     #region Implicit conversions
 
     [Fact]
-    public void Test_Int_To_ValueDocument(){
+    public void Test_Int_To_DocumentValue(){
         int a = 123;
-        ValueDocument doc = a;
+        DocumentValue doc = a;
 
         Assert.NotNull(doc);
         if (doc is not null)
@@ -287,8 +287,8 @@ public class DocTests
     }
 
     [Fact]
-    public void Test_ValueDocument_To_Int(){
-        ValueDocument doc = new ValueDocument(123);
+    public void Test_DocumentValue_To_Int(){
+        DocumentValue doc = new DocumentValue(123);
         int a = doc;
 
         Assert.Equal(doc.AsInt32, a);

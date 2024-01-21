@@ -5,14 +5,14 @@ using System.Linq;
 
 namespace Dbarone.Net.Document
 {
-    public class ArrayDocument : ValueDocument, IList<ValueDocument>
+    public class DocumentArray : DocumentValue, IList<DocumentValue>
     {
-        public ArrayDocument()
-            : base(DocumentType.Array, new List<ValueDocument>())
+        public DocumentArray()
+            : base(DocumentType.Array, new List<DocumentValue>())
         {
         }
 
-        public ArrayDocument(List<ValueDocument> array)
+        public DocumentArray(List<DocumentValue> array)
             : this()
         {
             if (array == null) throw new ArgumentNullException(nameof(array));
@@ -20,7 +20,7 @@ namespace Dbarone.Net.Document
             this.AddRange(array);
         }
 
-        public ArrayDocument(params ValueDocument[] array)
+        public DocumentArray(params DocumentValue[] array)
             : this()
         {
             if (array == null) throw new ArgumentNullException(nameof(array));
@@ -28,7 +28,7 @@ namespace Dbarone.Net.Document
             this.AddRange(array);
         }
 
-        public ArrayDocument(IEnumerable<ValueDocument> items)
+        public DocumentArray(IEnumerable<DocumentValue> items)
             : this()
         {
             if (items == null) throw new ArgumentNullException(nameof(items));
@@ -36,9 +36,9 @@ namespace Dbarone.Net.Document
             this.AddRange(items);
         }
 
-        public new IList<ValueDocument> RawValue => (IList<ValueDocument>)base.RawValue;
+        public new IList<DocumentValue> RawValue => (IList<DocumentValue>)base.RawValue;
 
-        public override ValueDocument this[int index]
+        public override DocumentValue this[int index]
         {
             get
             {
@@ -46,7 +46,7 @@ namespace Dbarone.Net.Document
             }
             set
             {
-                this.RawValue[index] = value ?? ValueDocument.Null;
+                this.RawValue[index] = value ?? DocumentValue.Null;
             }
         }
 
@@ -54,15 +54,15 @@ namespace Dbarone.Net.Document
 
         public bool IsReadOnly => false;
 
-        public void Add(ValueDocument item) => this.RawValue.Add(item ?? ValueDocument.Null);
+        public void Add(DocumentValue item) => this.RawValue.Add(item ?? DocumentValue.Null);
 
         public void AddRange<TCollection>(TCollection collection)
-            where TCollection : ICollection<ValueDocument>
+            where TCollection : ICollection<DocumentValue>
         {
             if(collection == null)
                 throw new ArgumentNullException(nameof(collection));
 
-            var list = (List<ValueDocument>)base.RawValue;
+            var list = (List<DocumentValue>)base.RawValue;
 
             var listEmptySpace = list.Capacity - list.Count;
             if (listEmptySpace < collection.Count)
@@ -77,29 +77,29 @@ namespace Dbarone.Net.Document
             
         }
         
-        public void AddRange(IEnumerable<ValueDocument> items)
+        public void AddRange(IEnumerable<DocumentValue> items)
         {
             if (items == null) throw new ArgumentNullException(nameof(items));
 
             foreach (var item in items)
             {
-                this.Add(item ?? ValueDocument.Null);
+                this.Add(item ?? DocumentValue.Null);
             }
         }
 
         public void Clear() => this.RawValue.Clear();
 
-        public bool Contains(ValueDocument item) => this.RawValue.Contains(item ?? ValueDocument.Null);
+        public bool Contains(DocumentValue item) => this.RawValue.Contains(item ?? DocumentValue.Null);
 
-        public void CopyTo(ValueDocument[] array, int arrayIndex) => this.RawValue.CopyTo(array, arrayIndex);
+        public void CopyTo(DocumentValue[] array, int arrayIndex) => this.RawValue.CopyTo(array, arrayIndex);
 
-        public IEnumerator<ValueDocument> GetEnumerator() => this.RawValue.GetEnumerator();
+        public IEnumerator<DocumentValue> GetEnumerator() => this.RawValue.GetEnumerator();
 
-        public int IndexOf(ValueDocument item) => this.RawValue.IndexOf(item ?? ValueDocument.Null);
+        public int IndexOf(DocumentValue item) => this.RawValue.IndexOf(item ?? DocumentValue.Null);
 
-        public void Insert(int index, ValueDocument item) => this.RawValue.Insert(index, item ?? ValueDocument.Null);
+        public void Insert(int index, DocumentValue item) => this.RawValue.Insert(index, item ?? DocumentValue.Null);
 
-        public bool Remove(ValueDocument item) => this.RawValue.Remove(item);
+        public bool Remove(DocumentValue item) => this.RawValue.Remove(item);
 
         public void RemoveAt(int index) => this.RawValue.RemoveAt(index);
 
@@ -111,7 +111,7 @@ namespace Dbarone.Net.Document
             }
         }
 
-        public override int CompareTo(ValueDocument other)
+        public override int CompareTo(DocumentValue other)
         {
             // if types are different, returns sort type order
             if (other.Type != DocumentType.Array) return this.Type.CompareTo(other.Type);

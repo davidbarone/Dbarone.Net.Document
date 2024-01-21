@@ -3,12 +3,12 @@
 ## Contents
 - [DictionaryDocument](#dbaronenetdocumentdictionarydocument)
   - [#ctor](#dbaronenetdocumentdictionarydocument#ctor)
-  - [#ctor](#dbaronenetdocumentdictionarydocument#ctor(systemcollectionsconcurrentconcurrentdictionary{systemstring,dbaronenetdocumentvaluedocument}))
-  - [#ctor](#dbaronenetdocumentdictionarydocument#ctor(systemcollectionsgenericidictionary{systemstring,dbaronenetdocumentvaluedocument}))
+  - [#ctor](#dbaronenetdocumentdictionarydocument#ctor(systemcollectionsconcurrentconcurrentdictionary{systemstring,dbaronenetdocumentdocumentvalue}))
+  - [#ctor](#dbaronenetdocumentdictionarydocument#ctor(systemcollectionsgenericidictionary{systemstring,dbaronenetdocumentdocumentvalue}))
   - [RawValue](#dbaronenetdocumentdictionarydocumentrawvalue)
   - [Item](#dbaronenetdocumentdictionarydocumentitem(systemstring))
   - [GetElements](#dbaronenetdocumentdictionarydocumentgetelements)
-  - [Add](#dbaronenetdocumentdictionarydocumentadd(systemstring,dbaronenetdocumentvaluedocument))
+  - [Add](#dbaronenetdocumentdictionarydocumentadd(systemstring,dbaronenetdocumentdocumentvalue))
   - [Remove](#dbaronenetdocumentdictionarydocumentremove(systemstring))
   - [GetBytesCount](#dbaronenetdocumentdictionarydocumentgetbytescount(systemboolean))
 - [DocumentType](#dbaronenetdocumentdocumenttype)
@@ -33,14 +33,14 @@
   - [String](#dbaronenetdocumentdocumenttypestring)
   - [Document](#dbaronenetdocumentdocumenttypedocument)
   - [VarInt](#dbaronenetdocumentdocumenttypevarint)
-- [ValueDocument](#dbaronenetdocumentvaluedocument)
-  - [Null](#dbaronenetdocumentvaluedocumentnull)
-  - [Type](#dbaronenetdocumentvaluedocumenttype)
-  - [RawValue](#dbaronenetdocumentvaluedocumentrawvalue)
-  - [Item](#dbaronenetdocumentvaluedocumentitem(systemstring))
-  - [Item](#dbaronenetdocumentvaluedocumentitem(systemint32))
-  - [GetBytesCount](#dbaronenetdocumentvaluedocumentgetbytescount(systemboolean))
-  - [GetBytesCountElement](#dbaronenetdocumentvaluedocumentgetbytescountelement(systemstring,dbaronenetdocumentvaluedocument))
+- [DocumentValue](#dbaronenetdocumentdocumentvalue)
+  - [Null](#dbaronenetdocumentdocumentvaluenull)
+  - [Type](#dbaronenetdocumentdocumentvaluetype)
+  - [RawValue](#dbaronenetdocumentdocumentvaluerawvalue)
+  - [Item](#dbaronenetdocumentdocumentvalueitem(systemstring))
+  - [Item](#dbaronenetdocumentdocumentvalueitem(systemint32))
+  - [GetBytesCount](#dbaronenetdocumentdocumentvaluegetbytescount(systemboolean))
+  - [GetBytesCountElement](#dbaronenetdocumentdocumentvaluegetbytescountelement(systemstring,dbaronenetdocumentdocumentvalue))
 - [VarInt](#dbaronenetdocumentvarint)
   - [Value](#dbaronenetdocumentvarintvalue)
   - [Bytes](#dbaronenetdocumentvarintbytes)
@@ -61,7 +61,7 @@
 ### Namespace:
 `Dbarone.Net.Document`
 ### Summary
- Represents a document as a dictionary of string / [ValueDocument](#dbaronenetdocumentvaluedocument) pairs. 
+ Represents a document as a dictionary of string / [DocumentValue](#dbaronenetdocumentdocumentvalue) pairs. 
 
 ### Type Parameters:
 None
@@ -86,10 +86,10 @@ None
 None
 
 <small>[Back to top](#top)</small>
->### <a id='dbaronenetdocumentdictionarydocument#ctor(systemcollectionsconcurrentconcurrentdictionary{systemstring,dbaronenetdocumentvaluedocument})'></a>method: #ctor
+>### <a id='dbaronenetdocumentdictionarydocument#ctor(systemcollectionsconcurrentconcurrentdictionary{systemstring,dbaronenetdocumentdocumentvalue})'></a>method: #ctor
 #### Signature
 ``` c#
-DictionaryDocument.#ctor(System.Collections.Concurrent.ConcurrentDictionary<System.String,Dbarone.Net.Document.ValueDocument> dict)
+DictionaryDocument.#ctor(System.Collections.Concurrent.ConcurrentDictionary<System.String,Dbarone.Net.Document.DocumentValue> dict)
 ```
 #### Summary
  Creates a new document using a dictionary of values. 
@@ -110,10 +110,10 @@ Exception thrown: [T:System.ArgumentNullException](#T:System.ArgumentNullExcepti
 None
 
 <small>[Back to top](#top)</small>
->### <a id='dbaronenetdocumentdictionarydocument#ctor(systemcollectionsgenericidictionary{systemstring,dbaronenetdocumentvaluedocument})'></a>method: #ctor
+>### <a id='dbaronenetdocumentdictionarydocument#ctor(systemcollectionsgenericidictionary{systemstring,dbaronenetdocumentdocumentvalue})'></a>method: #ctor
 #### Signature
 ``` c#
-DictionaryDocument.#ctor(System.Collections.Generic.IDictionary<System.String,Dbarone.Net.Document.ValueDocument> dict)
+DictionaryDocument.#ctor(System.Collections.Generic.IDictionary<System.String,Dbarone.Net.Document.DocumentValue> dict)
 ```
 #### Summary
  Creates a new document using a dictionary of values. 
@@ -166,10 +166,10 @@ None
 None
 
 <small>[Back to top](#top)</small>
->### <a id='dbaronenetdocumentdictionarydocumentadd(systemstring,dbaronenetdocumentvaluedocument)'></a>method: Add
+>### <a id='dbaronenetdocumentdictionarydocumentadd(systemstring,dbaronenetdocumentdocumentvalue)'></a>method: Add
 #### Signature
 ``` c#
-DictionaryDocument.Add(System.String key, Dbarone.Net.Document.ValueDocument value)
+DictionaryDocument.Add(System.String key, Dbarone.Net.Document.DocumentValue value)
 ```
 #### Summary
  Adds a new member to the document. 
@@ -372,7 +372,7 @@ None
 <small>[Back to top](#top)</small>
 
 ---
->## <a id='dbaronenetdocumentvaluedocument'></a>type: ValueDocument
+>## <a id='dbaronenetdocumentdocumentvalue'></a>type: DocumentValue
 ### Namespace:
 `Dbarone.Net.Document`
 ### Summary
@@ -381,40 +381,40 @@ None
 ### Type Parameters:
 None
 
->### <a id='dbaronenetdocumentvaluedocumentnull'></a>field: Null
+>### <a id='dbaronenetdocumentdocumentvaluenull'></a>field: Null
 #### Summary
  Represents a Null type. 
 
 
 <small>[Back to top](#top)</small>
->### <a id='dbaronenetdocumentvaluedocumenttype'></a>property: Type
+>### <a id='dbaronenetdocumentdocumentvaluetype'></a>property: Type
 #### Summary
  Indicate DataType of this value. 
 
 
 <small>[Back to top](#top)</small>
->### <a id='dbaronenetdocumentvaluedocumentrawvalue'></a>property: RawValue
+>### <a id='dbaronenetdocumentdocumentvaluerawvalue'></a>property: RawValue
 #### Summary
  Get internal .NET value object. 
 
 
 <small>[Back to top](#top)</small>
->### <a id='dbaronenetdocumentvaluedocumentitem(systemstring)'></a>property: Item
+>### <a id='dbaronenetdocumentdocumentvalueitem(systemstring)'></a>property: Item
 #### Summary
  Get / set a field for document. Fields are case sensitive. Only permitted for DataType.Document. 
 
 
 <small>[Back to top](#top)</small>
->### <a id='dbaronenetdocumentvaluedocumentitem(systemint32)'></a>property: Item
+>### <a id='dbaronenetdocumentdocumentvalueitem(systemint32)'></a>property: Item
 #### Summary
  Get / set value in array by position. Only permitted for DataType.Array 
 
 
 <small>[Back to top](#top)</small>
->### <a id='dbaronenetdocumentvaluedocumentgetbytescount(systemboolean)'></a>method: GetBytesCount
+>### <a id='dbaronenetdocumentdocumentvaluegetbytescount(systemboolean)'></a>method: GetBytesCount
 #### Signature
 ``` c#
-ValueDocument.GetBytesCount(System.Boolean recalc)
+DocumentValue.GetBytesCount(System.Boolean recalc)
 ```
 #### Summary
  Returns how many bytes this BsonValue will consume when converted into binary BSON If recalc = false, use cached length value (from Array/Document only) 
@@ -435,10 +435,10 @@ Exception thrown: [T:System.ArgumentException](#T:System.ArgumentException): Thr
 None
 
 <small>[Back to top](#top)</small>
->### <a id='dbaronenetdocumentvaluedocumentgetbytescountelement(systemstring,dbaronenetdocumentvaluedocument)'></a>method: GetBytesCountElement
+>### <a id='dbaronenetdocumentdocumentvaluegetbytescountelement(systemstring,dbaronenetdocumentdocumentvalue)'></a>method: GetBytesCountElement
 #### Signature
 ``` c#
-ValueDocument.GetBytesCountElement(System.String key, Dbarone.Net.Document.ValueDocument value)
+DocumentValue.GetBytesCountElement(System.String key, Dbarone.Net.Document.DocumentValue value)
 ```
 #### Summary
  Get how many bytes one single element will used in BSON format 
