@@ -9,11 +9,11 @@ using Dbarone.Net.Document;
 /// 
 /// The serial type is stored in the database as a VarInt. The values are as follows:
 /// 
-/// Serial Type     Data Type
-/// ===========     =========
-///
 /// Fixed Width DocumentTypes
-/// 
+/// =========================
+///
+/// Serial Type     Document Type
+/// -----------     -------------
 /// 0               NULL value
 /// 1               Boolean
 /// 2               Byte
@@ -22,9 +22,8 @@ using Dbarone.Net.Document;
 /// 5               Decimal
 /// 6               Double
 /// 7               Single
-
 /// 8               Int16
-/// 9              UInt16
+/// 9               UInt16
 /// 10              Int32
 /// 11              UInt32
 /// 12              Int64
@@ -33,12 +32,15 @@ using Dbarone.Net.Document;
 /// 15              Guid
 /// 
 /// Variable Length data types
+/// ========================== 
 /// 
-/// N>=20, N%4==0   Array. Value is a byte array that is (N-20)/5 bytes long
-/// N>=20, N%4==1   Blob. Value is a byte array that is (N-21)/5 bytes long.
-/// N>=20, N%4==2   String. Value is a string that is (N-22)/5 bytes long, stored in the text encoding of the database.
-/// N>=20, N%4==3   Document. value is a document that is (N-23)/5 bytes long
-/// N>=20, N%4==4   VarInt. value is (N-24)/5 bytes long
+/// Serial Type     Document Type
+/// -----------     -------------
+/// N>=20, N%5==0   Array. Value is a byte array that is (N-20)/5 bytes long
+/// N>=20, N%5==1   Blob. Value is a byte array that is (N-21)/5 bytes long.
+/// N>=20, N%5==2   String. Value is a string that is (N-22)/5 bytes long, stored in the text encoding of the database.
+/// N>=20, N%5==3   Document. value is a document that is (N-23)/5 bytes long
+/// N>=20, N%5==4   VarInt. value is (N-24)/5 bytes long
 /// </summary>
 public class SerialType
 {
