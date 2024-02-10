@@ -41,25 +41,25 @@ public interface IBuffer
 
     #region Read methods
 
-    public bool ReadBool(int index);
-    public Byte ReadByte(int index);
-    public SByte ReadSByte(int index);
-    public char ReadChar(int index);
-    public VarInt ReadVarInt(int index);
-    public Int16 ReadInt16(int index);
-    public UInt16 ReadUInt16(int index);
+    public bool ReadBool();
+    public Byte ReadByte();
+    public SByte ReadSByte();
+    public char ReadChar();
+    public VarInt ReadVarInt();
+    public Int16 ReadInt16();
+    public UInt16 ReadUInt16();
     public Int32 ReadInt32();
-    public UInt32 ReadUInt32(int index);
-    public Int64 ReadInt64(int index);
-    public UInt64 ReadUInt64(int index);
-    public Double ReadDouble(int index);
+    public UInt32 ReadUInt32();
+    public Int64 ReadInt64();
+    public UInt64 ReadUInt64();
+    public Double ReadDouble();
     public Decimal ReadDecimal();
-    public Single ReadSingle(int index);
-    public Guid ReadGuid(int index);
-    public byte[] ReadBytes(int index, int length);
-    public DateTime ReadDateTime(int index);
-    public string ReadString(int index, int length, TextEncoding textEncoding = TextEncoding.UTF8);
-    public object Read(DocumentType dataType, int index, int? length = null, TextEncoding textEncoding = TextEncoding.UTF8);
+    public Single ReadSingle();
+    public Guid ReadGuid();
+    public byte[] ReadBytes(int length);
+    public DateTime ReadDateTime();
+    public string ReadString(int length, TextEncoding textEncoding = TextEncoding.UTF8);
+    public object Read(DocumentType dataType, int? length = null, TextEncoding textEncoding = TextEncoding.UTF8);
 
     #endregion
 

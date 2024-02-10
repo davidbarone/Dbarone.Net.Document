@@ -102,28 +102,33 @@ public class GenericBuffer : IBuffer
 
     #region Read methods
 
-    public bool ReadBool(int index)
+    public bool ReadBool()
     {
+        var index = (int)this.Stream.Position;
         return InternalBuffer[index] != 0;
     }
 
-    public byte ReadByte(int index)
+    public byte ReadByte()
     {
+        var index = (int)this.Stream.Position;
         return InternalBuffer[index];
     }
 
-    public sbyte ReadSByte(int index)
+    public sbyte ReadSByte()
     {
+        var index = (int)this.Stream.Position;
         return (sbyte)InternalBuffer[index];
     }
 
-    public char ReadChar(int index)
+    public char ReadChar()
     {
+        var index = (int)this.Stream.Position;
         return BitConverter.ToChar(InternalBuffer, index);
     }
 
-    public VarInt ReadVarInt(int index)
+    public VarInt ReadVarInt()
     {
+        var index = (int)this.Stream.Position;
         int i = 0;
         byte[] bytes = new byte[4];
         Byte b;
@@ -136,13 +141,15 @@ public class GenericBuffer : IBuffer
         return new VarInt(bytes[0..i]);
     }
 
-    public Int16 ReadInt16(int index)
+    public Int16 ReadInt16()
     {
+        var index = (int)this.Stream.Position;
         return BitConverter.ToInt16(InternalBuffer, index);
     }
 
-    public UInt16 ReadUInt16(int index)
+    public UInt16 ReadUInt16()
     {
+        var index = (int)this.Stream.Position;
         return BitConverter.ToUInt16(InternalBuffer, index);
     }
 
@@ -152,28 +159,33 @@ public class GenericBuffer : IBuffer
         return BitConverter.ToInt32(InternalBuffer, index);
     }
 
-    public UInt32 ReadUInt32(int index)
+    public UInt32 ReadUInt32()
     {
+        var index = (int)this.Stream.Position;
         return BitConverter.ToUInt32(InternalBuffer, index);
     }
 
-    public Int64 ReadInt64(int index)
+    public Int64 ReadInt64()
     {
+        var index = (int)this.Stream.Position;
         return BitConverter.ToInt64(InternalBuffer, index);
     }
 
-    public UInt64 ReadUInt64(int index)
+    public UInt64 ReadUInt64()
     {
+        var index = (int)this.Stream.Position;
         return BitConverter.ToUInt64(InternalBuffer, index);
     }
 
-    public Double ReadDouble(int index)
+    public Double ReadDouble()
     {
+        var index = (int)this.Stream.Position;
         return BitConverter.ToDouble(InternalBuffer, index);
     }
 
-    public Single ReadSingle(int index)
+    public Single ReadSingle()
     {
+        var index = (int)this.Stream.Position;
         return BitConverter.ToSingle(InternalBuffer, index);
     }
 
@@ -187,25 +199,29 @@ public class GenericBuffer : IBuffer
         return new Decimal(new int[] { a, b, c, d });
     }
 
-    public Guid ReadGuid(int index)
+    public Guid ReadGuid()
     {
-        return new Guid(this.ReadBytes(index, 16));
+        var index = (int)this.Stream.Position;
+        return new Guid(this.ReadBytes(16));
     }
 
-    public byte[] ReadBytes(int index, int length)
+    public byte[] ReadBytes(int length)
     {
+        var index = (int)this.Stream.Position;
         var bytes = new byte[length];
         Buffer.BlockCopy(InternalBuffer, index, bytes, 0, length);
         return bytes;
     }
 
-    public DateTime ReadDateTime(int index)
+    public DateTime ReadDateTime()
     {
-        return DateTime.FromBinary(this.ReadInt64(index));
+        var index = (int)this.Stream.Position;
+        return DateTime.FromBinary(this.ReadInt64());
     }
 
-    public string ReadString(int index, int length, TextEncoding textEncoding = TextEncoding.UTF8)
+    public string ReadString(int length, TextEncoding textEncoding = TextEncoding.UTF8)
     {
+        var index = (int)this.Stream.Position;
         if (textEncoding == TextEncoding.UTF8)
         {
             return Encoding.UTF8.GetString(InternalBuffer, index, length);
@@ -217,48 +233,48 @@ public class GenericBuffer : IBuffer
         throw new Exception("Unable to read string encoding.");
     }
 
-    public object Read(DocumentType dataType, int index, int? length = null, TextEncoding textEncoding = TextEncoding.UTF8)
+    public object Read(DocumentType dataType, int? length = null, TextEncoding textEncoding = TextEncoding.UTF8)
     {
         switch (dataType)
         {
             case DocumentType.Boolean:
-                return ReadBool(index);
+                return ReadBool();
             case DocumentType.Byte:
-                return ReadByte(index);
+                return ReadByte();
             case DocumentType.SByte:
-                return ReadSByte(index);
+                return ReadSByte();
             case DocumentType.Char:
-                return ReadChar(index);
+                return ReadChar();
             case DocumentType.Decimal:
                 return ReadDecimal();
             case DocumentType.Double:
-                return ReadDouble(index);
+                return ReadDouble();
             case DocumentType.Single:
-                return ReadSingle(index);
+                return ReadSingle();
             case DocumentType.VarInt:
-                return ReadVarInt(index);
+                return ReadVarInt();
             case DocumentType.Int16:
-                return ReadInt16(index);
+                return ReadInt16();
             case DocumentType.UInt16:
-                return ReadUInt16(index);
+                return ReadUInt16();
             case DocumentType.Int32:
                 return ReadInt32();
             case DocumentType.UInt32:
-                return ReadUInt32(index);
+                return ReadUInt32();
             case DocumentType.Int64:
-                return ReadInt64(index);
+                return ReadInt64();
             case DocumentType.UInt64:
-                return ReadUInt64(index);
+                return ReadUInt64();
             case DocumentType.DateTime:
-                return ReadDateTime(index);
+                return ReadDateTime();
             case DocumentType.String:
                 if (length == null) { throw new Exception("Length required (1)."); }
-                return ReadString(index, length.Value, textEncoding);
+                return ReadString(length.Value, textEncoding);
             case DocumentType.Guid:
-                return ReadGuid(index);
+                return ReadGuid();
             case DocumentType.Blob:
                 if (length == null) { throw new Exception("Length required (2)."); }
-                return ReadBytes(index, length.Value);
+                return ReadBytes(length.Value);
         }
         throw new Exception($"Invalid data type.");
     }
