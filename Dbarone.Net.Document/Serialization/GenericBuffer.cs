@@ -283,54 +283,47 @@ public class GenericBuffer : IBuffer
 
     #region Write methods
 
-    public void Write(bool value, int index)
+    public void Write(bool value)
     {
         var bytes = BitConverter.GetBytes(value);
-        this.Stream.Position = index;
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
-    public void Write(byte value, int index)
+    public void Write(byte value)
     {
         // BitConverter.GetBytes(Byte) treats the byte value as a ushort, so returns 2 bytes.
         // Section 6.1.2 of the C# language spec
         // Take 1st byte only.
         var bytes = BitConverter.GetBytes(value).Take(1).ToArray();
-        this.Stream.Position = index;
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
-    public void Write(sbyte value, int index)
+    public void Write(sbyte value)
     {
         var bytes = BitConverter.GetBytes(value);
-        this.Stream.Position = index;
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
-    public void Write(char value, int index)
+    public void Write(char value)
     {
         var bytes = BitConverter.GetBytes(value);
-        this.Stream.Position = index;
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
-    public void Write(VarInt value, int index)
+    public void Write(VarInt value)
     {
-        this.Stream.Position = index;
         this.Stream.Write(value.Bytes, 0, value.Size);
     }
 
-    public void Write(Int16 value, int index)
+    public void Write(Int16 value)
     {
         var bytes = BitConverter.GetBytes(value);
-        this.Stream.Position = index;
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
-    public void Write(UInt16 value, int index)
+    public void Write(UInt16 value)
     {
         var bytes = BitConverter.GetBytes(value);
-        this.Stream.Position = index;
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
@@ -340,42 +333,37 @@ public class GenericBuffer : IBuffer
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
-    public void Write(UInt32 value, int index)
+    public void Write(UInt32 value)
     {
         var bytes = BitConverter.GetBytes(value);
-        this.Stream.Position = index;
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
-    public void Write(Int64 value, int index)
+    public void Write(Int64 value)
     {
         var bytes = BitConverter.GetBytes(value);
-        this.Stream.Position = index;
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
-    public void Write(UInt64 value, int index)
+    public void Write(UInt64 value)
     {
         var bytes = BitConverter.GetBytes(value);
-        this.Stream.Position = index;
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
-    public void Write(Double value, int index)
+    public void Write(Double value)
     {
         var bytes = BitConverter.GetBytes(value);
-        this.Stream.Position = index;
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
-    public void Write(Single value, int index)
+    public void Write(Single value)
     {
         var bytes = BitConverter.GetBytes(value);
-        this.Stream.Position = index;
         this.Stream.Write(bytes, 0, bytes.Length);
     }
 
-    public void Write(Decimal value, int index)
+    public void Write(Decimal value)
     {
         // Split Decimal into 4 ints
         var bits = Decimal.GetBits(value);
@@ -385,23 +373,25 @@ public class GenericBuffer : IBuffer
         this.Write(bits[3]);
     }
 
-    public void Write(Guid value, int index)
+    public void Write(Guid value)
     {
-        this.Write(value.ToByteArray(), index);
+        this.Write(value.ToByteArray());
     }
 
-    public void Write(byte[] value, int index)
+    public void Write(byte[] value)
     {
+        var index = (int)this.Stream.Position;
         Buffer.BlockCopy(value, 0, this.InternalBuffer, index, value.Length);
     }
 
-    public void Write(DateTime value, int index)
+    public void Write(DateTime value)
     {
-        this.Write(value.ToBinary(), index);
+        this.Write(value.ToBinary());
     }
 
-    public void Write(string value, int index, TextEncoding textEncoding = TextEncoding.UTF8)
+    public void Write(string value, TextEncoding textEncoding = TextEncoding.UTF8)
     {
+        var index = (int)this.Stream.Position;
         if (textEncoding == TextEncoding.UTF8)
         {
             // GetBytes writes directly to the buffer.
@@ -417,7 +407,7 @@ public class GenericBuffer : IBuffer
         }
     }
 
-    public void Write(object value, int index, TextEncoding textEncoding = TextEncoding.UTF8)
+    public void Write(object value, TextEncoding textEncoding = TextEncoding.UTF8)
     {
         var type = value.GetType();
         if (type.IsEnum)
@@ -426,43 +416,43 @@ public class GenericBuffer : IBuffer
         }
         if (type == typeof(bool))
         {
-            Write((bool)value, index);
+            Write((bool)value);
         }
         else if (type == typeof(byte))
         {
-            Write((byte)value, index);
+            Write((byte)value);
         }
         else if (type == typeof(sbyte))
         {
-            Write((sbyte)value, index);
+            Write((sbyte)value);
         }
         else if (type == typeof(char))
         {
-            Write((char)value, index);
+            Write((char)value);
         }
         else if (type == typeof(decimal))
         {
-            Write((decimal)value, index);
+            Write((decimal)value);
         }
         else if (type == typeof(double))
         {
-            Write((double)value, index);
+            Write((double)value);
         }
         else if (type == typeof(Single))
         {
-            Write((Single)value, index);
+            Write((Single)value);
         }
         else if (type == typeof(VarInt))
         {
-            Write((VarInt)value, index);
+            Write((VarInt)value);
         }
         else if (type == typeof(Int16))
         {
-            Write((Int16)value, index);
+            Write((Int16)value);
         }
         else if (type == typeof(UInt16))
         {
-            Write((UInt16)value, index);
+            Write((UInt16)value);
         }
         else if (type == typeof(Int32))
         {
@@ -470,35 +460,35 @@ public class GenericBuffer : IBuffer
         }
         else if (type == typeof(UInt32))
         {
-            Write((UInt32)value, index);
+            Write((UInt32)value);
         }
         else if (type == typeof(Int64))
         {
-            Write((Int64)value, index);
+            Write((Int64)value);
         }
         else if (type == typeof(UInt64))
         {
-            Write((UInt64)value, index);
+            Write((UInt64)value);
         }
         else if (type == typeof(DateTime))
         {
-            Write((DateTime)value, index);
+            Write((DateTime)value);
         }
         else if (type == typeof(string))
         {
-            Write((string)value, index, textEncoding);
+            Write((string)value, textEncoding);
         }
         else if (type == typeof(Guid))
         {
-            Write((Guid)value, index);
+            Write((Guid)value);
         }
         else if (type == typeof(byte[]))
         {
-            Write((byte[])value, index);
+            Write((byte[])value);
         }
         else if (type == typeof(DateTime))
         {
-            Write((DateTime)value, index);
+            Write((DateTime)value);
         }
     }
 

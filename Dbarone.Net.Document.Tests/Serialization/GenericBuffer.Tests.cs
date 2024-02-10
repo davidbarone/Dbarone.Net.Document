@@ -47,4 +47,15 @@ public class GenericBufferTests
         Assert.Equal(123, actual);
     }
 
+    [Theory]
+    [InlineData(DocumentType.Boolean, true)]
+    [InlineData(DocumentType.Byte, (Byte)123)]
+    [InlineData(DocumentType.Char, 'a')]
+    public void WriteTests(DocumentType docType, object expectedValue){
+       var buf = new GenericBuffer();
+        buf.Write(expectedValue);
+        buf.Position = 0;
+        var actualValue = buf.Read(docType);
+        Assert.Equal(expectedValue, actualValue);
+    }
 }

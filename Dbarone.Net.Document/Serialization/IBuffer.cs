@@ -65,25 +65,25 @@ public interface IBuffer
 
     #region Write methods
 
-    public void Write(bool value, int index);
-    public void Write(byte value, int index);
-    public void Write(sbyte value, int index);
-    public void Write(char value, int index);
-    public void Write(VarInt value, int index);
-    public void Write(Int16 value, int index);
-    public void Write(UInt16 value, int index);
+    public void Write(bool value);
+    public void Write(byte value);
+    public void Write(sbyte value);
+    public void Write(char value);
+    public void Write(VarInt value);
+    public void Write(Int16 value);
+    public void Write(UInt16 value);
     public void Write(Int32 value);
-    public void Write(UInt32 value, int index);
-    public void Write(Int64 value, int index);
-    public void Write(UInt64 value, int index);
-    public void Write(Double value, int index);
-    public void Write(Single value, int index);
-    public void Write(Decimal value, int index);
-    public void Write(Guid value, int index);
-    public void Write(byte[] value, int index);
-    public void Write(DateTime  value, int index);
-    public void Write(string value, int index, TextEncoding textEncoding = TextEncoding.UTF8);
-    public void Write(object value, int index, TextEncoding textEncoding = TextEncoding.UTF8);
+    public void Write(UInt32 value);
+    public void Write(Int64 value);
+    public void Write(UInt64 value);
+    public void Write(Double value);
+    public void Write(Single value);
+    public void Write(Decimal value);
+    public void Write(Guid value);
+    public void Write(byte[] value);
+    public void Write(DateTime  value);
+    public void Write(string value, TextEncoding textEncoding = TextEncoding.UTF8);
+    public void Write(object value, TextEncoding textEncoding = TextEncoding.UTF8);
 
     #endregion
 
