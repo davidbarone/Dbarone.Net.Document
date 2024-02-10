@@ -50,12 +50,101 @@ public class GenericBufferTests
     [Theory]
     [InlineData(DocumentType.Boolean, true)]
     [InlineData(DocumentType.Byte, (Byte)123)]
+    [InlineData(DocumentType.SByte, (SByte)123)]
     [InlineData(DocumentType.Char, 'a')]
+    [InlineData(DocumentType.Int16, Int16.MaxValue)]
+    [InlineData(DocumentType.UInt16, UInt16.MaxValue)]
+    [InlineData(DocumentType.Int32, Int32.MaxValue)]
+    [InlineData(DocumentType.UInt32, UInt32.MaxValue)]
+    [InlineData(DocumentType.Int64, Int64.MaxValue)]
+    [InlineData(DocumentType.UInt64, UInt64.MaxValue)]
+    [InlineData(DocumentType.Single, Single.MaxValue)]
+    [InlineData(DocumentType.Double, Double.MaxValue)]
     public void WriteTests(DocumentType docType, object expectedValue){
        var buf = new GenericBuffer();
         buf.Write(expectedValue);
         buf.Position = 0;
         var actualValue = buf.Read(docType);
         Assert.Equal(expectedValue, actualValue);
+    }
+
+    [Fact]
+    public void WriteDecimalTest()
+    {
+        // Arrange
+        var value = (decimal)123.45;
+        var buf = new GenericBuffer();
+        buf.Write(value);
+
+        // Act
+        buf.Position = 0;
+        var actual = buf.Read(DocumentType.Decimal);
+
+        // Assert
+        Assert.Equal(value, actual);
+    }
+
+    [Fact]
+    public void WriteDateTimeTest()
+    {
+        // Arrange
+        var value = DateTime.Now;
+        var buf = new GenericBuffer();
+        buf.Write(value);
+
+        // Act
+        buf.Position = 0;
+        var actual = buf.Read(DocumentType.DateTime);
+
+        // Assert
+        Assert.Equal(value, actual);
+    }
+
+    [Fact]
+    public void TestBuffer_WriteGuid()
+    {
+        // Arrange
+        var value = Guid.NewGuid();
+        var buf = new GenericBuffer();
+        buf.Write(value);
+
+        // Act
+        buf.Position = 0;
+        var actual = buf.Read(DocumentType.Guid);
+
+        // Assert
+        Assert.Equal(value, actual);
+    }
+
+    [Fact]
+    public void TestBuffer_WriteString()
+    {
+        // Arrange
+        var value = "foo bar";
+        var buf = new GenericBuffer();
+        buf.Write(value);
+
+        // Act
+        buf.Position = 0;
+        var actual = buf.Read(DocumentType.String);
+
+        // Assert
+        Assert.Equal(value, actual);
+    }
+
+    [Fact]
+    public void TestBuffer_WriteBlob()
+    {
+        // Arrange
+        var value = new byte[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        var buf = new GenericBuffer();
+        buf.Write(value);
+
+        // Act
+        buf.Position = 0;
+        var actual = buf.Read(DocumentType.Blob);
+
+        // Assert
+        Assert.Equal(value, actual);
     }
 }

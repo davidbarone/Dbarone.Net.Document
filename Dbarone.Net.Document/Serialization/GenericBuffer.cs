@@ -191,11 +191,14 @@ public class GenericBuffer : IBuffer
 
     public Decimal ReadDecimal()
     {
-        var index = (int)this.Stream.Position;
         var a = this.ReadInt32();
+        this.Position += 4;
         var b = this.ReadInt32();
+        this.Position += 4;
         var c = this.ReadInt32();
+        this.Position += 4;
         var d = this.ReadInt32();
+        this.Position += 4;
         return new Decimal(new int[] { a, b, c, d });
     }
 
