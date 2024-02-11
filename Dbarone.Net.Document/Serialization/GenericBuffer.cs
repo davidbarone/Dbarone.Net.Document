@@ -105,107 +105,129 @@ public class GenericBuffer : IBuffer
     public bool ReadBool()
     {
         var index = (int)this.Stream.Position;
-        return InternalBuffer[index] != 0;
+        var result = InternalBuffer[index] != 0;
+        this.Position += sizeof(Boolean);
+        return result;
     }
 
     public byte ReadByte()
     {
         var index = (int)this.Stream.Position;
-        return InternalBuffer[index];
+        var result = InternalBuffer[index];
+        this.Position += sizeof(Byte);
+        return result;
     }
 
     public sbyte ReadSByte()
     {
         var index = (int)this.Stream.Position;
-        return (sbyte)InternalBuffer[index];
+        var result = (sbyte)InternalBuffer[index];
+        this.Position += sizeof(SByte);
+        return result;
     }
 
     public char ReadChar()
     {
         var index = (int)this.Stream.Position;
-        return BitConverter.ToChar(InternalBuffer, index);
+        var result = BitConverter.ToChar(InternalBuffer, index);
+        this.Position += sizeof(Char);
+        return result;
     }
 
     public VarInt ReadVarInt()
     {
-        var index = (int)this.Stream.Position;
-        int i = 0;
+        int start = (int)this.Position;
         byte[] bytes = new byte[4];
         Byte b;
         do
         {
-            b = InternalBuffer[index + i];
-            bytes[i] = b;
-            i++;
+            b = InternalBuffer[(int)this.Position];
+            bytes[(int)this.Position - start] = b;
+            this.Position++;
         } while ((b & 128) != 0);
-        return new VarInt(bytes[0..i]);
+        return new VarInt(bytes[0..((int)this.Position - start)]);
     }
 
     public Int16 ReadInt16()
     {
         var index = (int)this.Stream.Position;
-        return BitConverter.ToInt16(InternalBuffer, index);
+        var result = BitConverter.ToInt16(InternalBuffer, index);
+        this.Position += sizeof(Int16);
+        return result;
     }
 
     public UInt16 ReadUInt16()
     {
         var index = (int)this.Stream.Position;
-        return BitConverter.ToUInt16(InternalBuffer, index);
+        var result = BitConverter.ToUInt16(InternalBuffer, index);
+        this.Position += sizeof(UInt16);
+        return result;
+
     }
 
     public Int32 ReadInt32()
     {
         var index = (int)this.Stream.Position;
-        return BitConverter.ToInt32(InternalBuffer, index);
+        var result = BitConverter.ToInt32(InternalBuffer, index);
+        this.Position += sizeof(Int32);
+        return result;
     }
 
     public UInt32 ReadUInt32()
     {
         var index = (int)this.Stream.Position;
-        return BitConverter.ToUInt32(InternalBuffer, index);
+        var result = BitConverter.ToUInt32(InternalBuffer, index);
+        this.Position += sizeof(UInt32);
+        return result;
     }
 
     public Int64 ReadInt64()
     {
         var index = (int)this.Stream.Position;
-        return BitConverter.ToInt64(InternalBuffer, index);
+        var result = BitConverter.ToInt64(InternalBuffer, index);
+        this.Position += sizeof(Int64);
+        return result;
     }
 
     public UInt64 ReadUInt64()
     {
         var index = (int)this.Stream.Position;
-        return BitConverter.ToUInt64(InternalBuffer, index);
+        var result = BitConverter.ToUInt64(InternalBuffer, index);
+        this.Position += sizeof(UInt64);
+        return result;
     }
 
     public Double ReadDouble()
     {
         var index = (int)this.Stream.Position;
-        return BitConverter.ToDouble(InternalBuffer, index);
+        var result = BitConverter.ToDouble(InternalBuffer, index);
+        this.Position += sizeof(Double);
+        return result;
     }
 
     public Single ReadSingle()
     {
         var index = (int)this.Stream.Position;
-        return BitConverter.ToSingle(InternalBuffer, index);
+        var result = BitConverter.ToSingle(InternalBuffer, index);
+        this.Position += sizeof(Single);
+        return result;
     }
 
     public Decimal ReadDecimal()
     {
         var a = this.ReadInt32();
-        this.Position += 4;
         var b = this.ReadInt32();
-        this.Position += 4;
         var c = this.ReadInt32();
-        this.Position += 4;
         var d = this.ReadInt32();
-        this.Position += 4;
         return new Decimal(new int[] { a, b, c, d });
     }
 
     public Guid ReadGuid()
     {
         var index = (int)this.Stream.Position;
-        return new Guid(this.ReadBytes(16));
+        var result = new Guid(this.ReadBytes(16));
+        this.Position += 16;
+        return result;
     }
 
     public byte[] ReadBytes(int length)
@@ -213,13 +235,16 @@ public class GenericBuffer : IBuffer
         var index = (int)this.Stream.Position;
         var bytes = new byte[length];
         Buffer.BlockCopy(InternalBuffer, index, bytes, 0, length);
+        this.Position += length;
         return bytes;
     }
 
     public DateTime ReadDateTime()
     {
         var index = (int)this.Stream.Position;
-        return DateTime.FromBinary(this.ReadInt64());
+        var result = DateTime.FromBinary(this.ReadInt64());
+        this.Position += sizeof(Int64);
+        return result;
     }
 
     public string ReadString(int length, TextEncoding textEncoding = TextEncoding.UTF8)
@@ -227,11 +252,15 @@ public class GenericBuffer : IBuffer
         var index = (int)this.Stream.Position;
         if (textEncoding == TextEncoding.UTF8)
         {
-            return Encoding.UTF8.GetString(InternalBuffer, index, length);
+            var result = Encoding.UTF8.GetString(InternalBuffer, index, length);
+            this.Position += length;
+            return result;
         }
         else if (textEncoding == TextEncoding.Latin1)
         {
-            return Encoding.Latin1.GetString(InternalBuffer, index, length);
+            var result = Encoding.Latin1.GetString(InternalBuffer, index, length);
+            this.Position += length;
+            return result;
         }
         throw new Exception("Unable to read string encoding.");
     }
@@ -286,87 +315,100 @@ public class GenericBuffer : IBuffer
 
     #region Write methods
 
-    public void Write(bool value)
+    public int Write(bool value)
     {
         var bytes = BitConverter.GetBytes(value);
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(byte value)
+    public int Write(byte value)
     {
         // BitConverter.GetBytes(Byte) treats the byte value as a ushort, so returns 2 bytes.
         // Section 6.1.2 of the C# language spec
         // Take 1st byte only.
         var bytes = BitConverter.GetBytes(value).Take(1).ToArray();
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(sbyte value)
+    public int Write(sbyte value)
     {
         var bytes = BitConverter.GetBytes(value);
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(char value)
+    public int Write(char value)
     {
         var bytes = BitConverter.GetBytes(value);
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(VarInt value)
+    public int Write(VarInt value)
     {
         this.Stream.Write(value.Bytes, 0, value.Size);
+        return value.Size;
     }
 
-    public void Write(Int16 value)
+    public int Write(Int16 value)
     {
         var bytes = BitConverter.GetBytes(value);
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(UInt16 value)
+    public int Write(UInt16 value)
     {
         var bytes = BitConverter.GetBytes(value);
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(Int32 value)
+    public int Write(Int32 value)
     {
         var bytes = BitConverter.GetBytes(value);
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(UInt32 value)
+    public int Write(UInt32 value)
     {
         var bytes = BitConverter.GetBytes(value);
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(Int64 value)
+    public int Write(Int64 value)
     {
         var bytes = BitConverter.GetBytes(value);
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(UInt64 value)
+    public int Write(UInt64 value)
     {
         var bytes = BitConverter.GetBytes(value);
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(Double value)
+    public int Write(Double value)
     {
         var bytes = BitConverter.GetBytes(value);
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(Single value)
+    public int Write(Single value)
     {
         var bytes = BitConverter.GetBytes(value);
         this.Stream.Write(bytes, 0, bytes.Length);
+        return bytes.Length;
     }
 
-    public void Write(Decimal value)
+    public int Write(Decimal value)
     {
         // Split Decimal into 4 ints
         var bits = Decimal.GetBits(value);
@@ -374,35 +416,49 @@ public class GenericBuffer : IBuffer
         this.Write(bits[1]);
         this.Write(bits[2]);
         this.Write(bits[3]);
+        return bits.Length;
     }
 
-    public void Write(Guid value)
+    public int Write(Guid value)
     {
-        this.Write(value.ToByteArray());
+        var arr = value.ToByteArray();
+        this.Write(arr);
+        return arr.Length;
     }
 
-    public void Write(byte[] value)
+    public int Write(byte[] value)
     {
         var index = (int)this.Stream.Position;
-        Buffer.BlockCopy(value, 0, this.InternalBuffer, index, value.Length);
+        //Buffer.BlockCopy(value, 0, this.InternalBuffer, index, value.Length);
+        this.Stream.Write(value, index, value.Length);
+        return value.Length;
     }
 
-    public void Write(DateTime value)
+    public int Write(DateTime value)
     {
-        this.Write(value.ToBinary());
+        var bin = value.ToBinary();
+        return this.Write(bin);
     }
 
-    public void Write(string value, TextEncoding textEncoding = TextEncoding.UTF8)
+    public int Write(string value, TextEncoding textEncoding = TextEncoding.UTF8)
     {
         var index = (int)this.Stream.Position;
         if (textEncoding == TextEncoding.UTF8)
         {
             // GetBytes writes directly to the buffer.
-            var bytes = Encoding.UTF8.GetBytes(value, 0, value.Length, this.InternalBuffer, index);
+            //var bytes = Encoding.UTF8.GetBytes(value, 0, value.Length, this.InternalBuffer, index);
+
+            var bytes = Encoding.UTF8.GetBytes(value);
+            Write(bytes);
+            return bytes.Length;
         }
         else if (textEncoding == TextEncoding.Latin1)
         {
-            var bytes = Encoding.Latin1.GetBytes(value, 0, value.Length, this.InternalBuffer, index);
+            //var bytes = Encoding.Latin1.GetBytes(value, 0, value.Length, this.InternalBuffer, index);
+
+            var bytes = Encoding.Latin1.GetBytes(value);
+            Write(bytes);
+            return bytes.Length;
         }
         else
         {
@@ -410,89 +466,91 @@ public class GenericBuffer : IBuffer
         }
     }
 
-    public void Write(object value, TextEncoding textEncoding = TextEncoding.UTF8)
+    public int Write(object value, TextEncoding textEncoding = TextEncoding.UTF8)
     {
         var type = value.GetType();
         if (type.IsEnum)
         {
             type = Enum.GetUnderlyingType(type);
         }
+
         if (type == typeof(bool))
         {
-            Write((bool)value);
+            return Write((bool)value);
         }
         else if (type == typeof(byte))
         {
-            Write((byte)value);
+            return Write((byte)value);
         }
         else if (type == typeof(sbyte))
         {
-            Write((sbyte)value);
+            return Write((sbyte)value);
         }
         else if (type == typeof(char))
         {
-            Write((char)value);
+            return Write((char)value);
         }
         else if (type == typeof(decimal))
         {
-            Write((decimal)value);
+            return Write((decimal)value);
         }
         else if (type == typeof(double))
         {
-            Write((double)value);
+            return Write((double)value);
         }
         else if (type == typeof(Single))
         {
-            Write((Single)value);
+            return Write((Single)value);
         }
         else if (type == typeof(VarInt))
         {
-            Write((VarInt)value);
+            return Write((VarInt)value);
         }
         else if (type == typeof(Int16))
         {
-            Write((Int16)value);
+            return Write((Int16)value);
         }
         else if (type == typeof(UInt16))
         {
-            Write((UInt16)value);
+            return Write((UInt16)value);
         }
         else if (type == typeof(Int32))
         {
-            Write((Int32)value);
+            return Write((Int32)value);
         }
         else if (type == typeof(UInt32))
         {
-            Write((UInt32)value);
+            return Write((UInt32)value);
         }
         else if (type == typeof(Int64))
         {
-            Write((Int64)value);
+            return Write((Int64)value);
         }
         else if (type == typeof(UInt64))
         {
-            Write((UInt64)value);
+            return Write((UInt64)value);
         }
         else if (type == typeof(DateTime))
         {
-            Write((DateTime)value);
+            return Write((DateTime)value);
         }
         else if (type == typeof(string))
         {
-            Write((string)value, textEncoding);
+            return Write((string)value, textEncoding);
         }
         else if (type == typeof(Guid))
         {
-            Write((Guid)value);
+            return Write((Guid)value);
         }
         else if (type == typeof(byte[]))
         {
-            Write((byte[])value);
+            return Write((byte[])value);
         }
         else if (type == typeof(DateTime))
         {
-            Write((DateTime)value);
+            return Write((DateTime)value);
         }
+        throw new Exception("Shouldn't get here!");
     }
 
     #endregion

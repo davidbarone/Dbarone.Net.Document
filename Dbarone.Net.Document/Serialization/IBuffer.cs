@@ -65,25 +65,25 @@ public interface IBuffer
 
     #region Write methods
 
-    public void Write(bool value);
-    public void Write(byte value);
-    public void Write(sbyte value);
-    public void Write(char value);
-    public void Write(VarInt value);
-    public void Write(Int16 value);
-    public void Write(UInt16 value);
-    public void Write(Int32 value);
-    public void Write(UInt32 value);
-    public void Write(Int64 value);
-    public void Write(UInt64 value);
-    public void Write(Double value);
-    public void Write(Single value);
-    public void Write(Decimal value);
-    public void Write(Guid value);
-    public void Write(byte[] value);
-    public void Write(DateTime  value);
-    public void Write(string value, TextEncoding textEncoding = TextEncoding.UTF8);
-    public void Write(object value, TextEncoding textEncoding = TextEncoding.UTF8);
+    public int Write(bool value);
+    public int Write(byte value);
+    public int Write(sbyte value);
+    public int Write(char value);
+    public int Write(VarInt value);
+    public int Write(Int16 value);
+    public int Write(UInt16 value);
+    public int Write(Int32 value);
+    public int Write(UInt32 value);
+    public int Write(Int64 value);
+    public int Write(UInt64 value);
+    public int Write(Double value);
+    public int Write(Single value);
+    public int Write(Decimal value);
+    public int Write(Guid value);
+    public int Write(byte[] value);
+    public int Write(DateTime value);
+    public int Write(string value, TextEncoding textEncoding = TextEncoding.UTF8);
+    public int Write(object value, TextEncoding textEncoding = TextEncoding.UTF8);
 
     #endregion
 

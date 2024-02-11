@@ -122,11 +122,27 @@ public class GenericBufferTests
         // Arrange
         var value = "foo bar";
         var buf = new GenericBuffer();
-        buf.Write(value);
+        var length = buf.Write(value);
 
         // Act
         buf.Position = 0;
-        var actual = buf.Read(DocumentType.String);
+        var actual = buf.Read(DocumentType.String, length);
+
+        // Assert
+        Assert.Equal(value, actual);
+    }
+
+    [Fact]
+    public void TestBuffer_WriteStringUnicode()
+    {
+        // Arrange
+        var value = "Þð©á";
+        var buf = new GenericBuffer();
+        var length = buf.Write(value);
+
+        // Act
+        buf.Position = 0;
+        var actual = buf.Read(DocumentType.String, length);
 
         // Assert
         Assert.Equal(value, actual);
@@ -142,7 +158,7 @@ public class GenericBufferTests
 
         // Act
         buf.Position = 0;
-        var actual = buf.Read(DocumentType.Blob);
+        var actual = buf.Read(DocumentType.Blob, 8);
 
         // Assert
         Assert.Equal(value, actual);
