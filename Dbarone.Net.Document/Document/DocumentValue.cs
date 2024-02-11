@@ -252,6 +252,8 @@ namespace Dbarone.Net.Document
 
         public bool AsBoolean => (bool)this.RawValue;
 
+        public char AsChar => (char)this.RawValue;
+
         public Byte AsByte => (Byte)this.RawValue;
 
         public SByte AsSByte => (SByte)this.RawValue;
@@ -270,6 +272,8 @@ namespace Dbarone.Net.Document
 
         public DateTime AsDateTime => (DateTime)this.RawValue;
         
+        public Single AsSingle => Convert.ToSingle(this.RawValue);
+
         public double AsDouble => Convert.ToDouble(this.RawValue);
 
         public decimal AsDecimal => Convert.ToDecimal(this.RawValue);

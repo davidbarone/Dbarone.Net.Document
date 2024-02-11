@@ -38,9 +38,76 @@ public class DocumentSerializer : IDocumentSerializer
             case DocumentType.Char:
                 serialType = new SerialType(DocumentType.Char);
                 buf.Write(serialType.Value);
-                buf.Write(docValue.AsByte);
+                buf.Write(docValue.AsChar);
                 break;
-
+            case DocumentType.DateTime:
+                serialType = new SerialType(DocumentType.DateTime);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.AsDateTime);
+                break;
+            case DocumentType.Decimal:
+                serialType = new SerialType(DocumentType.Decimal);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.AsDecimal);
+                break;
+            case DocumentType.Double:
+                serialType = new SerialType(DocumentType.Double);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.AsDouble);
+                break;
+            case DocumentType.Guid:
+                serialType = new SerialType(DocumentType.Guid);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.AsGuid);
+                break;
+            case DocumentType.Int16:
+                serialType = new SerialType(DocumentType.Int16);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.AsInt16);
+                break;
+            case DocumentType.Int32:
+                serialType = new SerialType(DocumentType.Int32);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.AsInt32);
+                break;
+            case DocumentType.Int64:
+                serialType = new SerialType(DocumentType.Int64);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.AsInt64);
+                break;
+            case DocumentType.UInt16:
+                serialType = new SerialType(DocumentType.UInt16);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.AsUInt16);
+                break;
+            case DocumentType.UInt32:
+                serialType = new SerialType(DocumentType.UInt32);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.AsUInt32);
+                break;
+            case DocumentType.UInt64:
+                serialType = new SerialType(DocumentType.UInt64);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.AsUInt64);
+                break;
+            case DocumentType.Single:
+                serialType = new SerialType(DocumentType.Single);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.AsSingle);
+                break;
+            case DocumentType.String:
+                // save string only - to get length in bytes
+                var len = buf.Write(docValue.AsString);
+                buf.Position = 0;
+                var bytes = buf.ReadBytes(len);
+                serialType = new SerialType(DocumentType.String, len);
+                buf.Write(bytes);
+                break;
+            case DocumentType.VarInt:
+                serialType = new SerialType(DocumentType.VarInt);
+                buf.Write(serialType.Value);
+                buf.Write(docValue.);
+                break;
             default:
                 break;
 
