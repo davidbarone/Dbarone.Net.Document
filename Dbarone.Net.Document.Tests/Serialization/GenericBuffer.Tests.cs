@@ -163,4 +163,60 @@ public class GenericBufferTests
         // Assert
         Assert.Equal(value, actual);
     }
+
+    [Fact]
+    public void GenericBuffer_WriteVarInt1(){
+        var varInt = new VarInt(127);
+        var buf = new GenericBuffer();
+        var bytes = buf.Write(varInt);
+        buf.Position = 0;
+        var read = buf.ReadVarInt();
+
+        Assert.Equal(1, bytes);
+        Assert.Equal(1, buf.Position);
+        Assert.Equal(1, buf.Length);
+        Assert.Equal(127, read.Value);
+    }
+
+    [Fact]
+    public void GenericBuffer_WriteVarInt2(){
+        var varInt = new VarInt(8192);
+        var buf = new GenericBuffer();
+        var bytes = buf.Write(varInt);
+        buf.Position = 0;
+        var read = buf.ReadVarInt();
+
+        Assert.Equal(2, bytes);
+        Assert.Equal(2, buf.Position);
+        Assert.Equal(2, buf.Length);
+        Assert.Equal(8192, read.Value);
+    }
+
+    [Fact]
+    public void GenericBuffer_WriteVarInt3(){
+        var varInt = new VarInt(2097151);
+        var buf = new GenericBuffer();
+        var bytes = buf.Write(varInt);
+        buf.Position = 0;
+        var read = buf.ReadVarInt();
+
+        Assert.Equal(3, bytes);
+        Assert.Equal(3, buf.Position);
+        Assert.Equal(3, buf.Length);
+        Assert.Equal(2097151, read.Value);
+    }
+
+    [Fact]
+    public void GenericBuffer_WriteVarInt4(){
+        var varInt = new VarInt(268435455);
+        var buf = new GenericBuffer();
+        var bytes = buf.Write(varInt);
+        buf.Position = 0;
+        var read = buf.ReadVarInt();
+
+        Assert.Equal(4, bytes);
+        Assert.Equal(4, buf.Position);
+        Assert.Equal(4, buf.Length);
+        Assert.Equal(268435455, read.Value);
+    }
 }
