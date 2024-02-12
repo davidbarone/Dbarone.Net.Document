@@ -256,6 +256,12 @@ public class GenericBuffer : IBuffer
             this.Position += length;
             return result;
         }
+        else if (textEncoding == TextEncoding.UTF16)
+        {
+            var result = Encoding.Unicode.GetString(InternalBuffer, index, length);
+            this.Position += length;
+            return result;
+        }
         else if (textEncoding == TextEncoding.Latin1)
         {
             var result = Encoding.Latin1.GetString(InternalBuffer, index, length);
@@ -449,6 +455,15 @@ public class GenericBuffer : IBuffer
             //var bytes = Encoding.UTF8.GetBytes(value, 0, value.Length, this.InternalBuffer, index);
 
             var bytes = Encoding.UTF8.GetBytes(value);
+            Write(bytes);
+            return bytes.Length;
+        }
+        else if (textEncoding == TextEncoding.UTF16)
+        {
+            // GetBytes writes directly to the buffer.
+            //var bytes = Encoding.UTF8.GetBytes(value, 0, value.Length, this.InternalBuffer, index);
+
+            var bytes = Encoding.Unicode.GetBytes(value);
             Write(bytes);
             return bytes.Length;
         }

@@ -11,7 +11,12 @@ public enum TextEncoding : Byte {
     UTF8 = 0,
     
     /// <summary>
+    /// Unicode UTF-16
+    /// </summary>
+    UTF16 = 1,
+
+    /// <summary>
     /// ISO-8859-1
     /// </summary>
-    Latin1 = 1
+    Latin1 = 2
 }

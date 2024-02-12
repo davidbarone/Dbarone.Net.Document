@@ -139,6 +139,12 @@ namespace Dbarone.Net.Document
             this.RawValue = value;
         }
 
+        public DocumentValue(VarInt value)
+        {
+            this.Type = value == null ? DocumentType.Null : DocumentType.VarInt;
+            this.RawValue = value;
+        }
+
         protected DocumentValue(DocumentType type, object? rawValue)
         {
             this.Type = type;
@@ -166,6 +172,7 @@ namespace Dbarone.Net.Document
             else if (value is Decimal) this.Type = DocumentType.Decimal;
             else if (value is Guid) this.Type = DocumentType.Guid;
             else if (value is String) this.Type = DocumentType.String;
+            else if (value is VarInt) this.Type = DocumentType.VarInt;
             else if (value is IDictionary<string, DocumentValue>) this.Type = DocumentType.Document;
             else if (value is IList<DocumentValue>) this.Type = DocumentType.Array;
             else if (value is Byte[]) this.Type = DocumentType.Blob;
@@ -280,9 +287,13 @@ namespace Dbarone.Net.Document
 
         public Guid AsGuid => (Guid)this.RawValue;
 
+        public VarInt AsVarInt => (VarInt)this.RawValue;
+
         #endregion
 
         #region IsTypes
+
+        public bool IsVarInt => this.Type == DocumentType.VarInt;
 
         public bool IsNull => this.Type == DocumentType.Null;
 
@@ -329,6 +340,18 @@ namespace Dbarone.Net.Document
         #endregion
 
         #region Implicit Ctor
+
+        // VarInt
+        public static implicit operator VarInt(DocumentValue value)
+        {
+            return (VarInt)value.RawValue;
+        }
+
+        // VarInt
+        public static implicit operator DocumentValue(VarInt value)
+        {
+            return new DocumentValue(value);
+        }
 
         // Boolean
         public static implicit operator Boolean(DocumentValue value)

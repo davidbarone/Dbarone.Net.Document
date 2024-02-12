@@ -8,7 +8,26 @@ public class DocumentSerializer : IDocumentSerializer
 
     public DocumentValue Deserialize(byte[] buffer, TextEncoding textEncoding = TextEncoding.UTF8)
     {
-        throw new NotImplementedException();
+        var buf = new GenericBuffer(buffer);
+
+        var varInt = buf.ReadVarInt();
+        var serialType = new SerialType(varInt);
+        switch (serialType.DocumentType)
+        {
+            case DocumentType.Null:
+                return DocumentValue.Null;
+            case DocumentType.Boolean:
+                var boolValue = buf.ReadBool();
+                return new DocumentValue(boolValue);
+            case DocumentType.Byte:
+                var byteValue = buf.ReadByte();
+                return new DocumentValue(byteValue);
+            case DocumentType.SByte:
+                var sByteValue = buf.ReadByte();
+                return new DocumentValue(sByteValue);
+            default:
+                throw new NotImplementedException();
+        }
     }
 
     public byte[] Serialize(DocumentValue docValue, TextEncoding textEncoding = TextEncoding.UTF8)
@@ -101,19 +120,19 @@ public class DocumentSerializer : IDocumentSerializer
                 buf.Position = 0;
                 var bytes = buf.ReadBytes(len);
                 serialType = new SerialType(DocumentType.String, len);
+                buf.Write(serialType.Value);
                 buf.Write(bytes);
                 break;
+            case DocumentType.Array:
+            case DocumentType.Document:
+            case DocumentType.Blob:
             case DocumentType.VarInt:
                 serialType = new SerialType(DocumentType.VarInt);
                 buf.Write(serialType.Value);
-                buf.Write(docValue.);
+                buf.Write(docValue.AsVarInt);
                 break;
             default:
                 break;
-
-
-
-
         }
         throw new NotImplementedException();
     }
