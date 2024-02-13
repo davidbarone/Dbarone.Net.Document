@@ -293,8 +293,6 @@ namespace Dbarone.Net.Document
 
         #region IsTypes
 
-        public bool IsVarInt => this.Type == DocumentType.VarInt;
-
         public bool IsNull => this.Type == DocumentType.Null;
 
         public bool IsBoolean => this.Type == DocumentType.Boolean;
@@ -327,7 +325,9 @@ namespace Dbarone.Net.Document
 
         public bool IsGuid => this.Type == DocumentType.Guid;
 
-        public bool IsNumber => this.IsByte || this.IsSByte || this.IsInt16 || this.IsUInt16 || this.IsInt32 || this.IsUInt32 || this.IsInt64 || this.IsUInt64 || this.IsSingle || this.IsDouble || this.IsDecimal;
+        public bool IsVarInt => this.Type == DocumentType.VarInt;
+
+        public bool IsNumber => this.IsByte || this.IsSByte || this.IsInt16 || this.IsUInt16 || this.IsInt32 || this.IsUInt32 || this.IsInt64 || this.IsUInt64 || this.IsSingle || this.IsDouble || this.IsDecimal || this.IsVarInt;
 
         public bool IsBlob => this.Type == DocumentType.Blob;
 
@@ -340,18 +340,6 @@ namespace Dbarone.Net.Document
         #endregion
 
         #region Implicit Ctor
-
-        // VarInt
-        public static implicit operator VarInt(DocumentValue value)
-        {
-            return (VarInt)value.RawValue;
-        }
-
-        // VarInt
-        public static implicit operator DocumentValue(VarInt value)
-        {
-            return new DocumentValue(value);
-        }
 
         // Boolean
         public static implicit operator Boolean(DocumentValue value)
@@ -553,6 +541,18 @@ namespace Dbarone.Net.Document
 
         // Binary
         public static implicit operator DocumentValue(Byte[] value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // VarInt
+        public static implicit operator VarInt(DocumentValue value)
+        {
+            return (VarInt)value.RawValue;
+        }
+
+        // VarInt
+        public static implicit operator DocumentValue(VarInt value)
         {
             return new DocumentValue(value);
         }

@@ -87,8 +87,8 @@ public class GenericBuffer : IBuffer
     public virtual byte[] ToArray()
     {
         // copy existing buffer
-        var buffer = new byte[InternalBuffer.Length];
-        Buffer.BlockCopy(InternalBuffer, 0, buffer, 0, InternalBuffer.Length);
+        var buffer = new byte[this.Length];
+        Buffer.BlockCopy(InternalBuffer, 0, buffer, 0, (int)this.Length);
         return buffer;
     }
 

@@ -1,4 +1,5 @@
 using Dbarone.Net.Document;
+using Microsoft.VisualBasic;
 
 public class DocumentSerializer : IDocumentSerializer
 {
@@ -25,6 +26,45 @@ public class DocumentSerializer : IDocumentSerializer
             case DocumentType.SByte:
                 var sByteValue = buf.ReadByte();
                 return new DocumentValue(sByteValue);
+            case DocumentType.Char:
+                var charValue = buf.ReadChar();
+                return new DocumentValue(charValue);
+            case DocumentType.DateTime:
+                var dateTimeValue = buf.ReadDateTime();
+                return new DocumentValue(dateTimeValue);
+            case DocumentType.Decimal:
+                var decimalValue = buf.ReadDecimal();
+                return new DocumentValue(decimalValue);
+            case DocumentType.Double:
+                var doubleValue = buf.ReadDouble();
+                return new DocumentValue(doubleValue);
+            case DocumentType.Guid:
+                var guidValue = buf.ReadGuid();
+                return new DocumentValue(guidValue);
+            case DocumentType.Int16:
+                var int16Value = buf.ReadInt16();
+                return new DocumentValue(int16Value);
+            case DocumentType.Int32:
+                var int32Value = buf.ReadInt32();
+                return new DocumentValue(int32Value);
+            case DocumentType.Int64:
+                var int64Value = buf.ReadInt64();
+                return new DocumentValue(int64Value);
+            case DocumentType.UInt16:
+                var uint16Value = buf.ReadUInt16();
+                return new DocumentValue(uint16Value);
+            case DocumentType.UInt32:
+                var uint32Value = buf.ReadUInt32();
+                return new DocumentValue(uint32Value);
+            case DocumentType.UInt64:
+                var uint64Value = buf.ReadUInt64();
+                return new DocumentValue(uint64Value);
+            case DocumentType.Single:
+                var singleValue = buf.ReadSingle();
+                return new DocumentValue(singleValue);
+            case DocumentType.String:
+                var stringValue = buf.ReadString(serialType.Length!.Value);
+                return new DocumentValue(stringValue);
             default:
                 throw new NotImplementedException();
         }
@@ -132,8 +172,9 @@ public class DocumentSerializer : IDocumentSerializer
                 buf.Write(docValue.AsVarInt);
                 break;
             default:
-                break;
+                throw new NotImplementedException();
         }
-        throw new NotImplementedException();
+
+        return buf.ToArray();
     }
 }
