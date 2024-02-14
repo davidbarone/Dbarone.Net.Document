@@ -184,7 +184,8 @@ public class DocumentSerializer : IDocumentSerializer
                 buf.Write(serialType.Value);
                 foreach (var docElement in docArray)
                 {
-                    var elementBytes = this.Serialize(docElement, textEncoding);
+                    DocumentSerializer ser = new DocumentSerializer();
+                    var elementBytes = ser.Serialize(docElement, textEncoding);
                     buf.Write(elementBytes);
                 }
                 break;

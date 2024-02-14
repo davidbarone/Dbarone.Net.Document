@@ -437,9 +437,9 @@ public class GenericBuffer : IBuffer
 
     public int Write(byte[] value)
     {
-        var index = (int)this.Stream.Position;
+        //var index = (int)this.Stream.Position;
         //Buffer.BlockCopy(value, 0, this.InternalBuffer, index, value.Length);
-        this.Stream.Write(value, index, value.Length);
+        this.Stream.Write(value, 0, value.Length);
         return value.Length;
     }
 
