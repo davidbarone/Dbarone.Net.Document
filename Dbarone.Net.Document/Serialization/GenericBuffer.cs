@@ -7,6 +7,8 @@ using System.Text;
 /// </summary>
 public class GenericBuffer : IBuffer
 {
+    private byte[] buffer;
+
     protected MemoryStream Stream;
 
     /// <summary>
@@ -38,6 +40,7 @@ public class GenericBuffer : IBuffer
     public GenericBuffer(byte[] buffer)
     {
         // MemoryStream with fixed capacity buffer
+        this.buffer = buffer;
         this.Stream = new MemoryStream(buffer);
         this.Resizeable = false;
     }
@@ -61,7 +64,7 @@ public class GenericBuffer : IBuffer
     {
         get
         {
-            return this.Stream.GetBuffer();
+            return this.Resizeable ? this.Stream.GetBuffer() : this.buffer ;
         }
     }
 
