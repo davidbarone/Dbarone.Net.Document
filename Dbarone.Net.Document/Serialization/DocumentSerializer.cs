@@ -7,10 +7,8 @@ public class DocumentSerializer : IDocumentSerializer
     {
     }
 
-    public DocumentValue Deserialize(byte[] buffer, TextEncoding textEncoding = TextEncoding.UTF8)
+    public DocumentValue Deserialize(GenericBuffer buf, TextEncoding textEncoding = TextEncoding.UTF8)
     {
-        var buf = new GenericBuffer(buffer);
-
         var varInt = buf.ReadVarInt();
         var serialType = new SerialType(varInt);
         switch (serialType.DocumentType)
@@ -65,9 +63,23 @@ public class DocumentSerializer : IDocumentSerializer
             case DocumentType.String:
                 var stringValue = buf.ReadString(serialType.Length!.Value);
                 return new DocumentValue(stringValue);
+            case DocumentType.Array:
+                List<DocumentValue> elements = new List<DocumentValue>();
+                for (int i = 0; i < serialType.Length; i++)
+                {
+                    var docValue = this.Deserialize(buf, textEncoding);
+                    elements.Add(docValue);
+                }
+                return new DocumentArray(elements);
             default:
                 throw new NotImplementedException();
         }
+    }
+
+    public DocumentValue Deserialize(byte[] buffer, TextEncoding textEncoding = TextEncoding.UTF8)
+    {
+        var buf = new GenericBuffer(buffer);
+        return this.Deserialize(buf, textEncoding);
     }
 
     public byte[] Serialize(DocumentValue docValue, TextEncoding textEncoding = TextEncoding.UTF8)
@@ -164,6 +176,18 @@ public class DocumentSerializer : IDocumentSerializer
                 buf.Write(bytes);
                 break;
             case DocumentType.Array:
+                var docArray = docValue as DocumentArray;
+                if (docArray is null) {
+                    throw new Exception("DocumentArray type expected!");
+                }
+                serialType = new SerialType(DocumentType.Array, docArray.Count);
+                buf.Write(serialType.Value);
+                foreach (var docElement in docArray)
+                {
+                    var elementBytes = this.Serialize(docElement, textEncoding);
+                    buf.Write(elementBytes);
+                }
+                break;
             case DocumentType.Document:
             case DocumentType.Blob:
             case DocumentType.VarInt:
