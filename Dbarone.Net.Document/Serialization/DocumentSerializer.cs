@@ -7,6 +7,16 @@ public class DocumentSerializer : IDocumentSerializer
     {
     }
 
+    private byte[] EncodeString(string value, TextEncoding textEncoding = TextEncoding.UTF8)
+    {
+        var buf = new GenericBuffer();
+        // save string only - to get length in bytes
+        var len = buf.Write(value);
+        buf.Position = 0;
+        var bytes = buf.ReadBytes(len);
+        return bytes;
+    }
+
     public DocumentValue Deserialize(GenericBuffer buf, TextEncoding textEncoding = TextEncoding.UTF8)
     {
         var varInt = buf.ReadVarInt();
@@ -71,6 +81,16 @@ public class DocumentSerializer : IDocumentSerializer
                     elements.Add(docValue);
                 }
                 return new DocumentArray(elements);
+            case DocumentType.Document:
+                DictionaryDocument dict = new DictionaryDocument();
+                for (int i = 0; i < serialType.Length; i++) {
+                    // key
+                    string key = this.Deserialize(buf, textEncoding);
+                    // value
+                    var value = this.Deserialize(buf, textEncoding);
+                    dict[key] = value;
+                }
+                return dict;
             default:
                 throw new NotImplementedException();
         }
@@ -167,17 +187,15 @@ public class DocumentSerializer : IDocumentSerializer
                 buf.Write(docValue.AsSingle);
                 break;
             case DocumentType.String:
-                // save string only - to get length in bytes
-                var len = buf.Write(docValue.AsString);
-                buf.Position = 0;
-                var bytes = buf.ReadBytes(len);
-                serialType = new SerialType(DocumentType.String, len);
+                var bytes = EncodeString(docValue.AsString, textEncoding);
+                serialType = new SerialType(DocumentType.String, bytes.Length);
                 buf.Write(serialType.Value);
                 buf.Write(bytes);
                 break;
             case DocumentType.Array:
                 var docArray = docValue as DocumentArray;
-                if (docArray is null) {
+                if (docArray is null)
+                {
                     throw new Exception("DocumentArray type expected!");
                 }
                 serialType = new SerialType(DocumentType.Array, docArray.Count);
@@ -190,6 +208,27 @@ public class DocumentSerializer : IDocumentSerializer
                 }
                 break;
             case DocumentType.Document:
+                var dictDoc = docValue as DictionaryDocument;
+                if (dictDoc is null)
+                {
+                    throw new Exception("DictionaryDocument type expected!");
+                }
+                serialType = new SerialType(DocumentType.Document, dictDoc.Keys.Count);
+                buf.Write(serialType.Value);
+                foreach (var key in dictDoc.Keys)
+                {
+                    // key
+                    var keyBytes = EncodeString(key, textEncoding);
+                    SerialType serialTypeKey = new SerialType(DocumentType.String, keyBytes.Length);
+                    buf.Write(serialTypeKey.Value);
+                    buf.Write(keyBytes);
+
+                    // value
+                    DocumentSerializer ser = new DocumentSerializer();
+                    var valueBytes = ser.Serialize(dictDoc[key], textEncoding);
+                    buf.Write(valueBytes);
+                }
+                break;
             case DocumentType.Blob:
             case DocumentType.VarInt:
                 serialType = new SerialType(DocumentType.VarInt);
