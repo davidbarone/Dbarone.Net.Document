@@ -830,5 +830,11 @@ namespace Dbarone.Net.Document
         }
 
         #endregion
+
+        #region Document Schema
+
+
+        #endregion
+
     }
 }
