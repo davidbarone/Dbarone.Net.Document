@@ -155,7 +155,9 @@ public class SchemaElement
 
             // validate attributes
             foreach (var attribute in validAttributes) {
-                this.Attributes.First(a => a.AttributeName.Equals(attribute, StringComparison.Ordinal)).Element.Validate(dd[attribute]);
+                var innerDocument = dd[attribute];
+                var innerSchema = this.Attributes.First(a => a.AttributeName.Equals(attribute, StringComparison.Ordinal)).Element;
+                innerSchema.Validate(innerDocument);
             }
         }
 
