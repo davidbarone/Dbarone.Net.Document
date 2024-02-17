@@ -26,17 +26,37 @@ public class SchemaTests
     [Fact]
     public void TestDocumentValidationSuccess()
     {
-        DictionaryDocument dd = new DictionaryDocument();
-        dd["a"] = new DocumentValue("foobar");
-        dd["b"] = new DocumentValue(DateTime.Now);
-        dd["c"] = new DocumentValue((int)123);
-
         SchemaElement schema = new SchemaElement(DocumentType.Document, false, null, new List<SchemaAttribute>{
             new SchemaAttribute(1, "a", new SchemaElement(DocumentType.String, false)),
             new SchemaAttribute(2, "b", new SchemaElement(DocumentType.DateTime, false)),
             new SchemaAttribute(3, "c", new SchemaElement(DocumentType.Int32, false))
         });
 
+        DictionaryDocument dd = new DictionaryDocument();
+        dd["a"] = new DocumentValue("foobar");
+        dd["b"] = new DocumentValue(DateTime.Now);
+        dd["c"] = new DocumentValue((int)123);
+
         Assert.True(schema.Validate(dd));
     }
+
+    [Fact]
+    public void TestDocumentValidationFailure()
+    {
+        SchemaElement schema = new SchemaElement(DocumentType.Document, false, null, new List<SchemaAttribute>{
+            new SchemaAttribute(1, "a", new SchemaElement(DocumentType.String, false)),
+            new SchemaAttribute(2, "b", new SchemaElement(DocumentType.DateTime, false)),
+            new SchemaAttribute(3, "c", new SchemaElement(DocumentType.Int32, false))
+        });
+
+        DictionaryDocument dd = new DictionaryDocument();
+        dd["a"] = new DocumentValue("foobar");
+        dd["b"] = new DocumentValue(DateTime.Now);
+        dd["c"] = new DocumentValue((int)123);
+        // This column is not in the schema
+        dd["d"] = new DocumentValue((int)123);
+
+        Assert.Throws<Exception>(() => schema.Validate(dd));
+    }
+
 }
