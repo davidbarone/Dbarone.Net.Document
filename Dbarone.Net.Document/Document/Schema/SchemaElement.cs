@@ -48,15 +48,16 @@ public class SchemaElement
     /// <param name="dictionaryDocument">The DictionaryDocument instance to create the SchemaElement from.</param>
     public SchemaElement(DictionaryDocument dictionaryDocument)
     {
-        IEnumerable<SchemaAttribute>? attributes = null;
-        if (dictionaryDocument["Attributes"] is not null)
-        {
-            attributes = dictionaryDocument["Attributes"].AsArray.Select(a => new SchemaAttribute(a.AsDocument));
-        }
         this.DocumentType = (DocumentType)dictionaryDocument["DocumentType"].AsInt32;
         this.AllowNull = dictionaryDocument["AllowNull"].AsBoolean;
-        this.Element = new SchemaElement(dictionaryDocument["Element"].AsDocument);
-        this.Attributes = attributes;
+        if (dictionaryDocument.ContainsKey("Element"))
+        {
+            this.Element = new SchemaElement(dictionaryDocument["Element"].AsDocument);
+        }
+        if (dictionaryDocument.ContainsKey("Attributes"))
+        {
+            this.Attributes = dictionaryDocument["Attributes"].AsArray.Select(a => new SchemaAttribute(a.AsDocument)).ToList();
+        }
     }
 
     /// <summary>
@@ -72,7 +73,7 @@ public class SchemaElement
                 throw new Exception("Element cannot be null for DocumentType.Array.");
             }
             DictionaryDocument dd = new DictionaryDocument();
-            dd["DocumentType"] = new DocumentValue(DocumentType);
+            dd["DocumentType"] = new DocumentValue((int)DocumentType);
             dd["AllowNull"] = new DocumentValue(AllowNull);
             dd["Element"] = Element.ToDictionaryDocument();
             return dd;
@@ -84,15 +85,15 @@ public class SchemaElement
                 throw new Exception("Attributes cannot be null for DocumentType.Document");
             }
             DictionaryDocument dd = new DictionaryDocument();
-            dd["DocumentType"] = new DocumentValue(DocumentType);
+            dd["DocumentType"] = new DocumentValue((int)DocumentType);
             dd["AllowNull"] = new DocumentValue(AllowNull);
-            dd["Attributes"] = new DocumentArray(Attributes.Select(a => a.ToDictionaryDocument()));
+            dd["Attributes"] = new DocumentArray(Attributes.Select(a => (DocumentValue)a.ToDictionaryDocument()).ToList());
             return dd;
         }
         else
         {
             return new DictionaryDocument(new Dictionary<string, DocumentValue> {
-                {"DocumentType", new DocumentValue(DocumentType)},
+                {"DocumentType", new DocumentValue((int)DocumentType)},
                 {"AllowNull", new DocumentValue(AllowNull)}
             });
         }

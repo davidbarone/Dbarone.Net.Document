@@ -47,7 +47,7 @@ public class SchemaAttribute
         DictionaryDocument dd = new DictionaryDocument();
         dd["AttributeId"] = new DocumentValue(AttributeId);
         dd["AttributeName"] = new DocumentValue(AttributeName);
-        dd["Element"] = Element.ToDictionaryDocument();
+        dd["Element"] = (DocumentValue)Element.ToDictionaryDocument();
         return dd;
     }
 }
