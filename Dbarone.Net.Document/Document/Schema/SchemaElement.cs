@@ -3,7 +3,7 @@ using System.Xml.Schema;
 using Dbarone.Net.Document;
 
 /// <summary>
-/// Represents an element in a schema definition.
+/// Represents an element in a document schema definition.
 /// </summary>
 public class SchemaElement
 {
@@ -34,7 +34,7 @@ public class SchemaElement
     /// <param name="allowNull">Set to true if DocumentValue.Null is allowed.</param>
     /// <param name="element">The inner element for DocumentValue.Array types.</param>
     /// <param name="attributes">The inner attributes for DocumentValue.Document types.</param>
-    public SchemaElement(DocumentType documentType, bool allowNull, SchemaElement element = null, IEnumerable<SchemaAttribute>? attributes = null)
+    public SchemaElement(DocumentType documentType, bool allowNull, SchemaElement? element = null, IEnumerable<SchemaAttribute>? attributes = null)
     {
         this.DocumentType = documentType;
         this.AllowNull = allowNull;
@@ -48,8 +48,8 @@ public class SchemaElement
     /// <param name="dictionaryDocument">The DictionaryDocument instance to create the SchemaElement from.</param>
     public SchemaElement(DictionaryDocument dictionaryDocument)
     {
-        IEnumerable<SchemaAttribute> attributes = null;
-        if (dictionaryDocument["Attributes"] != null)
+        IEnumerable<SchemaAttribute>? attributes = null;
+        if (dictionaryDocument["Attributes"] is not null)
         {
             attributes = dictionaryDocument["Attributes"].AsArray.Select(a => new SchemaAttribute(a.AsDocument));
         }
@@ -59,10 +59,18 @@ public class SchemaElement
         this.Attributes = attributes;
     }
 
+    /// <summary>
+    /// Converts the current schema element to a <see cref="DictionaryDocument"/> instance.
+    /// </summary>
+    /// <returns></returns>
     public DictionaryDocument ToDictionaryDocument()
     {
         if (this.DocumentType == DocumentType.Array)
         {
+            if (Element is null)
+            {
+                throw new Exception("Element cannot be null for DocumentType.Array.");
+            }
             DictionaryDocument dd = new DictionaryDocument();
             dd["DocumentType"] = new DocumentValue(DocumentType);
             dd["AllowNull"] = new DocumentValue(AllowNull);
@@ -71,6 +79,10 @@ public class SchemaElement
         }
         else if (this.DocumentType == DocumentType.Document)
         {
+            if (Attributes is null)
+            {
+                throw new Exception("Attributes cannot be null for DocumentType.Document");
+            }
             DictionaryDocument dd = new DictionaryDocument();
             dd["DocumentType"] = new DocumentValue(DocumentType);
             dd["AllowNull"] = new DocumentValue(AllowNull);
@@ -85,26 +97,69 @@ public class SchemaElement
             });
         }
     }
-}
 
-public class SchemaAttribute
-{
-    public int AttributeId { get; set; }
-    public string AttributeName { get; set; }
-    public SchemaElement Element { get; set; }
+    /// <summary>
+    /// Validates a document using the current schema.
+    /// </summary>
+    /// <param name="document"></param>
+    /// <returns></returns>
+    public bool Validate(DocumentValue document)
+    {
+        if (!(this.DocumentType == document.Type || (this.AllowNull && document.IsNull)))
+        {
+            throw new Exception("Validation error: Invalid type.");
+        }
 
-    public SchemaAttribute(DictionaryDocument dictionaryDocument)
-    {
-        this.AttributeId = dictionaryDocument["AttributeId"].AsInt32;
-        this.AttributeName = dictionaryDocument["AttributeName"].AsString;
-        this.Element = new SchemaElement(dictionaryDocument["Element"].AsDocument);
-    }
-    public DictionaryDocument ToDictionaryDocument()
-    {
-        DictionaryDocument dd = new DictionaryDocument();
-        dd["AttributeId"] = new DocumentValue(AttributeId);
-        dd["AttributeName"] = new DocumentValue(AttributeName);
-        dd["Element"] = Element.ToDictionaryDocument();
-        return dd;
+        // Array?
+        if (this.DocumentType == DocumentType.Array)
+        {
+            if (this.Element == null)
+            {
+                throw new Exception("Array validation: Element is null.");
+            }
+            foreach (var item in document.AsArray)
+            {
+                this.Element.Validate(item);
+            }
+        }
+
+        // Document?
+        if (this.DocumentType == DocumentType.Document)
+        {
+            if (this.Attributes == null)
+            {
+                throw new Exception("Document validation: Attributes are null.");
+            }
+
+            var schemaAttributes = this.Attributes.Select(a => a.AttributeName);
+            var dd = document.AsDocument;
+            var documentAttributes = dd.Keys;
+            
+            // attributes can be missing in document if the schema AllowNull is set.
+            var attributesMissingInDocument = schemaAttributes
+                .Except(documentAttributes)
+                .Where(
+                        a => this.Attributes.First(f => f.AttributeName.Equals(a, StringComparison.Ordinal)).Element.AllowNull
+                );
+            var attributesMissingInSchema = documentAttributes.Except(schemaAttributes);
+
+            if (attributesMissingInDocument.Any()){
+                throw new Exception($"Attribute {attributesMissingInDocument.First()} is not defined in the document.");
+            }
+
+            if (attributesMissingInSchema.Any()){
+                throw new Exception($"Attribute {attributesMissingInSchema.First()} is not defined in the schema.");
+            }
+
+            var validAttributes = schemaAttributes.Intersect(documentAttributes);
+
+            // validate attributes
+            foreach (var attribute in validAttributes) {
+                this.Attributes.First(a => a.AttributeName.Equals(attribute, StringComparison.Ordinal)).Element.Validate(dd[attribute]);
+            }
+        }
+
+        // If get here, then all good.
+        return true;
     }
 }
