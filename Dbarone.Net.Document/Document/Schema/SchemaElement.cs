@@ -56,7 +56,7 @@ public class SchemaElement
         }
         if (dictionaryDocument.ContainsKey("Attributes"))
         {
-            this.Attributes = dictionaryDocument["Attributes"].AsArray.Select(a => new SchemaAttribute(a.AsDocument)).ToList();
+            this.Attributes = dictionaryDocument["Attributes"].AsArray.Select(a => new SchemaAttribute(a.AsDocument));
         }
     }
 
@@ -87,7 +87,7 @@ public class SchemaElement
             DictionaryDocument dd = new DictionaryDocument();
             dd["DocumentType"] = new DocumentValue((int)DocumentType);
             dd["AllowNull"] = new DocumentValue(AllowNull);
-            dd["Attributes"] = new DocumentArray(Attributes.Select(a => (DocumentValue)a.ToDictionaryDocument()).ToList());
+            dd["Attributes"] = new DocumentArray(Attributes.Select(a => a.ToDictionaryDocument()));
             return dd;
         }
         else
