@@ -9,7 +9,7 @@ public class SchemaAttribute
     /// <summary>
     /// The attribute id. Attribute ids must NOT be changed on a type, as they are used to encode objects during the serialisation process.
     /// </summary>
-    public int AttributeId { get; set; } = default!;
+    public short AttributeId { get; set; } = default!;
 
     /// <summary>
     /// The attribute name.
@@ -21,7 +21,7 @@ public class SchemaAttribute
     /// </summary>
     public SchemaElement Element { get; set; } = default!;
 
-    public SchemaAttribute(int attributeId, string attributeName, SchemaElement element)
+    public SchemaAttribute(short attributeId, string attributeName, SchemaElement element)
     {
         this.AttributeId = attributeId;
         this.AttributeName = attributeName;
@@ -33,7 +33,7 @@ public class SchemaAttribute
     /// <param name="dictionaryDocument"></param>
     public SchemaAttribute(DictionaryDocument dictionaryDocument)
     {
-        this.AttributeId = dictionaryDocument["AttributeId"].AsInt32;
+        this.AttributeId = (short)dictionaryDocument["AttributeId"].AsInt16;
         this.AttributeName = dictionaryDocument["AttributeName"].AsString;
         this.Element = new SchemaElement(dictionaryDocument["Element"].AsDocument);
     }
