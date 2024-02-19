@@ -107,9 +107,14 @@ public class DocumentSerializer : IDocumentSerializer
                 }
                 serialType = new SerialType(DocumentType.Array, docArray.Count);
                 buffer.Write(serialType.Value);
+                SchemaElement? innerElement = null;
+                if (!(schema is null) && !(schema.Element is null))
+                {
+                    innerElement = schema.Element;
+                }
                 foreach (var docElement in docArray)
                 {
-                    this.Serialize(buffer, docElement, schema, textEncoding);
+                    this.Serialize(buffer, docElement, innerElement, textEncoding);
                 }
                 break;
             case DocumentType.Document:
