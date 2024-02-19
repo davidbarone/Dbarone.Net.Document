@@ -142,7 +142,7 @@ public class DocumentSerializer : IDocumentSerializer
                     {
                         var idx = schema.Attributes!.First(a => a.AttributeName.Equals(key, StringComparison.Ordinal)).AttributeId;
                         SerialType serialTypeKey = new SerialType(DocumentType.Int16);
-                        buffer.Write(serialType.Value);
+                        buffer.Write(serialTypeKey.Value);
                         buffer.Write(idx);
                     }
                     else
@@ -178,6 +178,10 @@ public class DocumentSerializer : IDocumentSerializer
         // Write schema
         if (schema != null)
         {
+            // Validate document first:
+            schema.Validate(document);
+
+            // If got here, document is valid - we can write schema to serialised header.
             buf.Write((byte)101);   // Schema header present
             this.Serialize(buf, schema.ToDictionaryDocument(), null, textEncoding);
         }
@@ -313,7 +317,9 @@ public class DocumentSerializer : IDocumentSerializer
                             innerAttribute = schema.Attributes.First(a => a.AttributeName.Equals(key, StringComparison.Ordinal)).Element;
                             var value = this.Deserialize(buf, innerAttribute, textEncoding);
                             dict[key] = value;
-                        } else {
+                        }
+                        else
+                        {
                             throw new Exception("Invalid idx");
                         }
                     }
@@ -349,7 +355,16 @@ public class DocumentSerializer : IDocumentSerializer
             schema = new SchemaElement(schemaDocument);
         }
 
-        return this.Deserialize(buf, schema, textEncoding);
+        DocumentValue result = this.Deserialize(buf, schema, textEncoding);
+
+        // Magic footer byte
+        var footerByte1 = buf.ReadByte();   // 0xDB
+        if (footerByte1 != 0xDB)
+        {
+            throw new Exception("Invalid serialization format.");
+        }
+
+        return result;
     }
 
     #endregion

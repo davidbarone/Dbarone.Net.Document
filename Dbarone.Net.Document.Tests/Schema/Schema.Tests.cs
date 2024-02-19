@@ -60,31 +60,8 @@ public class SchemaTests
     }
 
     [Fact]
-    public void TestSchemaSerialization() {
-        SchemaElement schema1 = new SchemaElement(DocumentType.Document, false, null, new List<SchemaAttribute>{
-            new SchemaAttribute(1, "a", new SchemaElement(DocumentType.String, false)),
-            new SchemaAttribute(2, "b", new SchemaElement(DocumentType.DateTime, false)),
-            new SchemaAttribute(3, "c", new SchemaElement(DocumentType.Int32, false))
-        });
-
-        // Serialize
-        var dd1 = schema1.ToDictionaryDocument();
-        DocumentSerializer ser = new DocumentSerializer();
-        var bytes1 = ser.Serialize(dd1);
-
-        // Deserialize
-        var dd2 = ser.Deserialize(bytes1).AsDocument;
-        var bytes2 = ser.Serialize(dd2);
-        
-        var schema2 = new SchemaElement(dd2);
-
-        Assert.Equal(DocumentType.Document, schema2.DocumentType);
-        Assert.Equal(3, schema2.Attributes!.Count());
-        Assert.Equal("c", schema2.Attributes!.First(a => a.AttributeId == 3).AttributeName);
-    }
-
-   [Fact]
-    public void TestToDictionaryDocument() {
+    public void TestToDictionaryDocument()
+    {
         SchemaElement schema1 = new SchemaElement(DocumentType.Document, false, null, new List<SchemaAttribute>{
             new SchemaAttribute(1, "a", new SchemaElement(DocumentType.String, false)),
             new SchemaAttribute(2, "b", new SchemaElement(DocumentType.DateTime, false)),
@@ -99,4 +76,28 @@ public class SchemaTests
         Assert.Equal("c", schema2.Attributes!.First(a => a.AttributeId == 3).AttributeName);
     }
 
+    [Fact]
+    public void TestSchemaSerialization()
+    {
+        SchemaElement schema1 = new SchemaElement(DocumentType.Document, false, null, new List<SchemaAttribute>{
+            new SchemaAttribute(1, "a", new SchemaElement(DocumentType.String, false)),
+            new SchemaAttribute(2, "b", new SchemaElement(DocumentType.DateTime, false)),
+            new SchemaAttribute(3, "c", new SchemaElement(DocumentType.Int32, false))
+        });
+
+        // Serialize
+        var dd1 = schema1.ToDictionaryDocument();
+        DocumentSerializer ser = new DocumentSerializer();
+        var bytes1 = ser.Serialize(dd1);
+
+        // Deserialize
+        var dd2 = ser.Deserialize(bytes1).AsDocument;
+        var bytes2 = ser.Serialize(dd2);
+
+        var schema2 = new SchemaElement(dd2);
+
+        Assert.Equal(DocumentType.Document, schema2.DocumentType);
+        Assert.Equal(3, schema2.Attributes!.Count());
+        Assert.Equal("c", schema2.Attributes!.First(a => a.AttributeId == 3).AttributeName);
+    }
 }

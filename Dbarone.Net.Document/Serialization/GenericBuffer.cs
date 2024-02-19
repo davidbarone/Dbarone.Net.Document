@@ -246,7 +246,6 @@ public class GenericBuffer : IBuffer
     {
         var index = (int)this.Stream.Position;
         var result = DateTime.FromBinary(this.ReadInt64());
-        this.Position += sizeof(Int64);
         return result;
     }
 

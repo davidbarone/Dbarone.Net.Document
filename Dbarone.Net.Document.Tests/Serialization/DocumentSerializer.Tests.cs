@@ -64,4 +64,31 @@ public class DocumentSerializerTests
         Assert.IsType<DictionaryDocument>(dd2);
         Assert.Equal(3, (dd2 as DictionaryDocument)!.Count);
     }
+
+    [Fact]
+    public void SerializeDictionaryDocumentWithSchema()
+    {
+        SchemaElement schema = new SchemaElement(DocumentType.Document, false, null, new List<SchemaAttribute>(){
+            new SchemaAttribute(1, "Name", new SchemaElement(DocumentType.String, false, null, null)),
+            new SchemaAttribute(2, "Age", new SchemaElement(DocumentType.Int32, false, null, null)),
+            new SchemaAttribute(3, "DoB", new SchemaElement(DocumentType.DateTime, false, null, null)),
+        });
+
+        DictionaryDocument dd1 = new DictionaryDocument();
+        dd1["Name"] = new DocumentValue("FooBar");
+        dd1["Age"] = new DocumentValue((Int32)123);
+        dd1["DoB"] = new DocumentValue(DateTime.Now);
+
+        IDocumentSerializer ser = new DocumentSerializer();
+
+        // Serialize
+        var bytes = ser.Serialize(dd1, schema);
+
+        // Deserialize
+        var dd2 = ser.Deserialize(bytes);
+
+        Assert.Equal(dd1, dd2);
+        Assert.IsType<DictionaryDocument>(dd2);
+        Assert.Equal(3, (dd2 as DictionaryDocument)!.Count);
+    }
 }
