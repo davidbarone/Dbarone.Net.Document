@@ -124,7 +124,43 @@ Documents can be serialised to / deserialised from byte arrays. The `IDocumentSe
 
 Multiple serialisation methods are supported based on whether the document has a predefined schema, or is a no-schema document.
 
+### Variable Length Integers (VarInt)
+
+Before discussing serialisation in more depth, we need to cover a couple of topics. Firstly is Variable length integers (VarInts). These are a mechanism of storing integers in the least amount of bytes possible. VarInts are used extensively in this project to store things such as data types and data sizes. The use of VarInts allows the serialised data to be compressed - for example, using Int32 values to store sizes of data would require 4 bytes of storage, even for small values. However, using a VarInt value, small values can be cleverly encoded to require 1 byte of storage only. VarInts are also used in systems like SQLite, and you can read more about them [here](https://en.wikipedia.org/wiki/Variable-length_quantity).
+
+### Serial Types
+
+When decoding documents, metadata like the data types and data sizes must be encoded with the data to enable readers to deserialise the data afterwards. The 'Serial Type' encodes the data type and data size of the subsequent serialised data. Serial types are encoded as VarInts to ensure efficient compression when stored in files. The following table describes how the serial type values are calculated:
+
+| Serial Type      | Meaning                                                                                             |
+| ---------------- | --------------------------------------------------------------------------------------------------- |
+| 0                | Value is NULL                                                                                       |
+| 1                | Value is Boolean                                                                                    |
+| 2                | Value is Byte                                                                                       |
+| 3                | Value is SByte                                                                                      |
+| 4                | Value is Char                                                                                       |
+| 5                | Value is Decimal                                                                                    |
+| 6                | Value is Double                                                                                     |
+| 7                | Value is Single                                                                                     |
+| 8                | Value is Int16                                                                                      |
+| 9                | Value is UInt16                                                                                     |
+| 10               | Value is Int32                                                                                      |
+| 11               | Value is UInt32                                                                                     |
+| 12               | Value is Int64                                                                                      |
+| 13               | Value is UInt64                                                                                     |
+| 14               | Value is DateTime                                                                                   |
+| 15               | Value is Guid                                                                                       |
+| N>=20 and N%5==0 | Array. Value is a byte array that is (N-20)/5 bytes long                                            |
+| N>=21 and N%5==1 | Blob. Value is a byte array that is (N-21)/5 bytes long.                                            |
+| N>=22 and N%5==2 | String. Value is a string that is (N-22)/5 bytes long, stored in the text encoding of the database. |
+| N>=23 and N%5==3 | Document. value is a document that is (N-23)/5 bytes long                                           |
+| N>=24 and N%5==4 | VarInt. value is (N-24)/5 bytes long                                                                |
 
 ### Schema-Defined Document
 
-Documents can be serialised with a predefined document schema. If a schema is defined the document is validated against the schema. In addition, a serialisation optimisation is employed to map document key names with an index value. This index value is the AttributeId of the corresponding `SchemaAttribute` rule found in the provided schema. This optimisation reduces the overall serialised data size as object key values are encoded as numbers instead of serialising the entire key name for each row / object.
+Documents can be schema-less or schema-bound. This affects how the document is serialized.
+
+Schema-less documents are those without any fixed schema. Schema-less `DictionaryDocument` objects can contain any arbitrary keys and values. This allows for flexible / unstructed data to be stored. When these documents are serialised, the key associated with each value is serialised with the value in much the same fashion as text serialisation protocols like Json or XML. This serialisaton technique, allows for unstructured data to be fully self-describing. However, it is not efficient with regards to data storage.
+
+Alternatively, documents can be serialised with a predefined document schema. If a schema is defined the document is also validated against the schema before being serialised. When schema-bound documents are serialised, the schema is encoded at the start of the serialised output. The schema includes all dictionary key names and types (attributes). Each attribute requires a unique AttributeId to be assigned. The data is serialised after the schema. When serialising the data, the attribute / key names are replaced with the AttributeId which is stored as a VarInt. This results in a much compressed serialised output.
+
