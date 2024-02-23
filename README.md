@@ -70,6 +70,53 @@ Objects can be modelled using the `DictionaryDocument` class:
     dictDoc["foo"] = 123;
     dictDoc["bar"] = DateTime.Now;
 ```
+### Document Schema
+
+Documents can be schema-less, meaning that they can take on any arbitrary structure. However, you can impose rules on how a document structure should be. This is done by creating a schema.
+
+A schema is a set of rules that define the structure of a document. Schema rules include:
+- The permitted data type of a value (one of the above native or complex types)
+- Whether a null value is permitted
+- The permitted document key values with their associated data types
+- Whether an array of elements is permitted, with the optional data type of each element
+
+There are 2 classes used to define schemas: `SchemaElement` and `SchemaAttribute`.
+
+The example below creates a schema, then validates the schema against 2 documents:
+
+``` c#
+    // Document passing schema validation
+
+    SchemaElement schema = new SchemaElement(DocumentType.Document, false, null, new List<SchemaAttribute>{
+        new SchemaAttribute(1, "a", new SchemaElement(DocumentType.String, false)),
+        new SchemaAttribute(2, "b", new SchemaElement(DocumentType.DateTime, false)),
+        new SchemaAttribute(3, "c", new SchemaElement(DocumentType.Int32, false))
+    });
+
+    DictionaryDocument dd = new DictionaryDocument();
+    dd["a"] = new DocumentValue("foobar");
+    dd["b"] = new DocumentValue(DateTime.Now);
+    dd["c"] = new DocumentValue((int)123);
+
+    Assert.True(schema.Validate(dd));   // returns 'true'. Document successfully validated.
+```
+
+``` c#
+    // Document failing schema validation
+    
+    SchemaElement schema = new SchemaElement(DocumentType.Document, false, null, new List<SchemaAttribute>{
+        new SchemaAttribute(1, "a", new SchemaElement(DocumentType.String, false)),
+        new SchemaAttribute(2, "b", new SchemaElement(DocumentType.DateTime, false)),
+        new SchemaAttribute(3, "c", new SchemaElement(DocumentType.Int32, false))
+    });
+
+    DictionaryDocument dd = new DictionaryDocument();
+    dd["a"] = new DocumentValue("foobar");
+    dd["b"] = new DocumentValue(DateTime.Now);
+    dd["c"] = new DocumentValue("baz"); // this should be an Int32!
+
+    Assert.True(schema.Validate(dd));   // throws an exception. Document not validated.
+```
 
 ## Serialisation
 
@@ -77,15 +124,6 @@ Documents can be serialised to / deserialised from byte arrays. The `IDocumentSe
 
 Multiple serialisation methods are supported based on whether the document has a predefined schema, or is a no-schema document.
 
-### Document Schema
-
-A document schema is a set of rules that define the structure of a document. Schema rules include:
-- The permitted data type of a value (one of the above native or complex types)
-- Whether a null value is permitted
-- The permitted document key values with their associated data types
-- Whether an array of elements is permitted, with the optional data type of each element
-
-There are 2 classes used to define schemas: `SchemaElement` and `SchemaAttribute`.
 
 ### Schema-Defined Document
 
