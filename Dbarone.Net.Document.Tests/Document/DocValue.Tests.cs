@@ -275,7 +275,8 @@ public class DocTests
     #region Implicit conversions
 
     [Fact]
-    public void Test_Int_To_DocumentValue(){
+    public void Test_Int_To_DocumentValue()
+    {
         int a = 123;
         DocumentValue doc = a;
 
@@ -287,7 +288,8 @@ public class DocTests
     }
 
     [Fact]
-    public void Test_DocumentValue_To_Int(){
+    public void Test_DocumentValue_To_Int()
+    {
         DocumentValue doc = new DocumentValue(123);
         int a = doc;
 

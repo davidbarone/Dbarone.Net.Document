@@ -46,6 +46,31 @@ The following complex types are supported:
 | Array    | An array or collection of values. Supports indexing of elements |
 | Document | An associative array of key / value elements                    |
 
+### Creating Documents
+
+Simple documents can be created by simply assigning the appropriate value to a new `DocumentValue` variable, for example:
+
+``` c#
+    DocumentValue doc = "foobar"; // doc.Type = DocumentType.String
+    DocumentValue doc = (Int32)123; // doc.Type = DocumentType.Int32
+    DocumentValue doc = DateTime.Now;   // doc.Type = DocumentType.DateTime 
+```
+
+Arrays can be created using the DocumentArray class:
+
+``` c#
+    int[] arr = new int[] { 1, 2, 3, 4, 5 };
+    DocumentArray docArr = new DocumentArray(arr.Select(a=>(DocumentValue)a));  // doc.Type = DocumentType.Array 
+```
+
+Objects can be modelled using the `DictionaryDocument` class:
+
+``` c#
+    DictionaryDocument dictDoc = new DictionaryDocument();  // doc.Type = DocumentType.Document
+    dictDoc["foo"] = 123;
+    dictDoc["bar"] = DateTime.Now;
+```
+
 ## Serialisation
 
 Documents can be serialised to / deserialised from byte arrays. The `IDocumentSerializer` interface defines serialisation operations.
