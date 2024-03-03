@@ -164,3 +164,15 @@ Schema-less documents are those without any fixed schema. Schema-less `Dictionar
 
 Alternatively, documents can be serialised with a predefined document schema. If a schema is defined the document is also validated against the schema before being serialised. When schema-bound documents are serialised, the schema is encoded at the start of the serialised output. The schema includes all dictionary key names and types (attributes). Each attribute requires a unique AttributeId to be assigned. The data is serialised after the schema. When serialising the data, the attribute / key names are replaced with the AttributeId which is stored as a VarInt. This results in a much compressed serialised output.
 
+### ColumnStoreDocumentArray
+
+A common document structure is a tabluar model comprised of a 2 dimensional array of rows and columns. This can be modelled using a DocumentArray containing zero or more DictionaryDocument objects. This can be thought of as a 'row based' document. Column storage can be thought of as having all the rows for a particular column adjacent. This is like having a DictionaryDocument, where each element is array with the same number of elements. When tables are stored in columnar format, some additional storage optimisations can be done: 
+
+
+
+TO DO
+-----
+
+CSV library
+byte compression - Huffman
+ColumnStore class - dictionary encoding / RLE / Huffman encoding / VarInt encoding
