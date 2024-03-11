@@ -165,4 +165,22 @@ public class SchemaElement
         // If get here, then all good.
         return true;
     }
+
+    /// <summary>
+    /// Returns true if the schema describes a tabular document.
+    /// This is defined as a document array, where each element
+    /// in array is a schema-bound document, where each element
+    /// in the document is a primitive type (i.e. not array or document) 
+    /// </summary>
+    /// <returns>Returns true if a tabular schema</returns>
+    public bool IsTabularSchema() {
+        return
+            this.DocumentType == DocumentType.Array &&              // Must be document array
+            this.Element != null &&                                 // Must have inner element defined
+            this.Element.DocumentType == DocumentType.Document &&   // Inner element must be a dictionary document
+            this.Element.Attributes != null &&                      // Inner dictionary document must have attributes defined
+            this.Element.Attributes.Count() > 0 &&                  // Inner dictionary document must have attributes defined
+            this.Element.Attributes.All(a => a.Element.DocumentType != DocumentType.Array && a.Element.DocumentType != DocumentType.Document);
+                                                                    // All attributes must be primitive / document value types
+    }
 }

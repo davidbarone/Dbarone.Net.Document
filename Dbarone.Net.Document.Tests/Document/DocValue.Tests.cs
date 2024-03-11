@@ -2,10 +2,42 @@ namespace Dbarone.Net.Document.Tests;
 using Xunit;
 using Dbarone.Net.Document;
 using System;
+using System.Security.Cryptography.X509Certificates;
 
 public class DocTests
 {
     #region Ctor tests
+
+    [Fact]
+    public void Test_DictionaryDocument_Ctor()
+    {
+        Dictionary<string, object> dict = new Dictionary<string, object>();
+        dict["foo"] = 123;
+        dict["bar"] = "abc";
+        dict["baz"] = DateTime.Now;
+        DocumentValue docValue = new DocumentValue(dict);
+        var a = docValue.AsDocument;
+        Assert.IsType<DictionaryDocument>(a);
+        Assert.Equal(123, a["foo"].AsInt32);
+    }
+
+
+
+    public void Test_ArrayDictionaryDocument_Ctor()
+    {
+        List<Dictionary<string, object>> arr = new List<Dictionary<string, object>>();
+        Dictionary<string, object> dict = new Dictionary<string, object>();
+        dict["foo"] = 123;
+        dict["bar"] = "abc";
+        dict["baz"] = DateTime.Now;
+        arr.Add(dict);
+        arr.Add(dict);
+        DocumentValue docValue = new DocumentValue(dict);
+        var a = docValue.AsDocument;
+        Assert.IsType<DictionaryDocument>(a);
+        Assert.Equal(123, a["foo"].AsInt32);
+
+    }
 
     [Fact]
     public void Test_DocumentValue_Ctor_Null()

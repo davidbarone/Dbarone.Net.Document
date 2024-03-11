@@ -251,7 +251,7 @@ namespace Dbarone.Net.Document
 
         public DocumentArray AsArray => new DocumentArray(this.RawValue as IList<DocumentValue>);
 
-        public DictionaryDocument AsDocument => this as DictionaryDocument;
+        public DictionaryDocument AsDocument => new DictionaryDocument((this.RawValue as IDictionary<string, DocumentValue>)!);
 
         public Byte[] AsBinary => this.RawValue as Byte[];
 
