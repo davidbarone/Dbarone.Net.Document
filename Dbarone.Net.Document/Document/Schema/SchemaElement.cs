@@ -27,6 +27,11 @@ public class SchemaElement
     /// </summary>
     public IEnumerable<SchemaAttribute>? Attributes { get; set; } = null;
 
+    public SchemaElement()
+    {
+
+    }
+
     /// <summary>
     /// Creates a new SchemaElement instance.
     /// </summary>
@@ -43,7 +48,7 @@ public class SchemaElement
     }
 
     /// <summary>
-    /// Creates a new SchemaElement instance from a <see cref="DictionaryDocument"/> instance.
+    /// Creates a new SchemaElement instance from a <see cref="DictionaryDocument"/> instance. Used to deserlialise schemas.
     /// </summary>
     /// <param name="dictionaryDocument">The DictionaryDocument instance to create the SchemaElement from.</param>
     public SchemaElement(DictionaryDocument dictionaryDocument)
@@ -61,7 +66,8 @@ public class SchemaElement
     }
 
     /// <summary>
-    /// Converts the current schema element to a <see cref="DictionaryDocument"/> instance.
+    /// Converts the current schema element to a <see cref="DictionaryDocument"/> instance. This is
+    /// useful when the schema needs to be serialised.
     /// </summary>
     /// <returns></returns>
     public DictionaryDocument ToDictionaryDocument()
@@ -135,7 +141,7 @@ public class SchemaElement
             var schemaAttributes = this.Attributes.Select(a => a.AttributeName);
             var dd = document.AsDocument;
             var documentAttributes = dd.Keys;
-            
+
             // attributes can be missing in document if the schema AllowNull is set.
             var attributesMissingInDocument = schemaAttributes
                 .Except(documentAttributes)
@@ -144,18 +150,21 @@ public class SchemaElement
                 );
             var attributesMissingInSchema = documentAttributes.Except(schemaAttributes);
 
-            if (attributesMissingInDocument.Any()){
+            if (attributesMissingInDocument.Any())
+            {
                 throw new Exception($"Attribute {attributesMissingInDocument.First()} is not defined in the document.");
             }
 
-            if (attributesMissingInSchema.Any()){
+            if (attributesMissingInSchema.Any())
+            {
                 throw new Exception($"Attribute {attributesMissingInSchema.First()} is not defined in the schema.");
             }
 
             var validAttributes = schemaAttributes.Intersect(documentAttributes);
 
             // validate attributes
-            foreach (var attribute in validAttributes) {
+            foreach (var attribute in validAttributes)
+            {
                 var innerDocument = dd[attribute];
                 var innerSchema = this.Attributes.First(a => a.AttributeName.Equals(attribute, StringComparison.Ordinal)).Element;
                 innerSchema.Validate(innerDocument);
@@ -173,7 +182,8 @@ public class SchemaElement
     /// in the document is a primitive type (i.e. not array or document) 
     /// </summary>
     /// <returns>Returns true if a tabular schema</returns>
-    public bool IsTabularSchema() {
+    public bool IsTabularSchema()
+    {
         return
             this.DocumentType == DocumentType.Array &&              // Must be document array
             this.Element != null &&                                 // Must have inner element defined
@@ -181,6 +191,197 @@ public class SchemaElement
             this.Element.Attributes != null &&                      // Inner dictionary document must have attributes defined
             this.Element.Attributes.Count() > 0 &&                  // Inner dictionary document must have attributes defined
             this.Element.Attributes.All(a => a.Element.DocumentType != DocumentType.Array && a.Element.DocumentType != DocumentType.Document);
-                                                                    // All attributes must be primitive / document value types
+        // All attributes must be primitive / document value types
+    }
+
+    /// <summary>
+    /// Returns true if the schema describes a list of simple elements.
+    /// This is defined as a document array, where each element
+    /// in the array is a primitive DocumentValue type (i.e. not array
+    /// or document) 
+    /// </summary>
+    /// <returns>Returns true if a tabular schema</returns>
+    public bool IsListSchema()
+    {
+        return
+            this.DocumentType == DocumentType.Array &&              // Must be document array
+            this.Element != null &&                                 // Must have inner element defined
+            this.Element.DocumentType != DocumentType.Array && this.Element.DocumentType != DocumentType.Document;
+    }
+
+    private SchemaElement? GetCompatibleSchema(SchemaElement? el1, SchemaElement? el2)
+    {
+        SchemaElement result = new SchemaElement();
+        if (el1 is null || el2 is null)
+        {
+            // If either schema is undefined, the resulting schema is undefined.
+            return null;
+        }
+        else if (el1.DocumentType == DocumentType.Null && el2.DocumentType == DocumentType.Null)
+        {
+            result.DocumentType = DocumentType.Null;
+            AllowNull = true;
+            return result;
+        }
+        else if (el1.DocumentType == DocumentType.Array && el2.DocumentType == DocumentType.Array)
+        {
+            // 2 arrays. Only compatible if inner elements are compatible
+            result.DocumentType = DocumentType.Array;
+            result.AllowNull = false;
+            result.Element = GetCompatibleSchema(el1.Element, el2.Element);
+            return result;
+        }
+        else if (el1.DocumentType == DocumentType.Document && el2.DocumentType == DocumentType.Document)
+        {
+            // 2 documents. Only compatible if inner attributes are compatible
+            result.DocumentType = DocumentType.Document;
+            result.AllowNull = false;
+            if (el1.Attributes is null || el2.Attributes is null)
+            {
+                // If either document schema is null, the 2 schemas are not compatible.
+                result.Attributes = null;
+                return result;
+            }
+            else if (el1.Attributes.Count() != el2.Attributes.Count())
+            {
+                // if the document schemas have different numbers of attributes, they are not compatible.
+                result.Attributes = null;
+                return result;
+            }
+            else if (el1.Attributes.Select(a => a.AttributeId).Except(el2.Attributes.Select(a => a.AttributeId)).Any())
+            {
+                // if the document schemas have different attribute ids, they are not compatible.
+                result.Attributes = null;
+                return result;
+            }
+            else
+            {
+                var attributes = new List<SchemaAttribute>();
+                foreach (var attribute in el1.Attributes.OrderBy(a => a.AttributeId))
+                {
+                    // if at any attribute id, the names don't match, the attributes are incompatible
+                    SchemaAttribute attr2 = el2.Attributes.First(a => a.AttributeId == attribute.AttributeId);
+                    if (attribute.AttributeName != attr2.AttributeName)
+                    {
+                        attributes = null;
+                        break;
+                    }
+                    var compatibleSchema = GetCompatibleSchema(attribute.Element, attr2.Element);
+                    if (compatibleSchema is null)
+                    {
+                        // if the 2 attributes aren't compatible, neither are the entire documents.
+                        attributes = null;
+                        break;
+                    }
+                    else
+                    {
+                        SchemaAttribute attr = new SchemaAttribute(
+                            attribute.AttributeId,
+                            attribute.AttributeName,
+                            compatibleSchema
+                            );
+                        attributes.Add(attr);
+                    }
+                }
+                // At this point, if we have a list of attributes, it must be compatible.
+                if (attributes is not null)
+                {
+                    result.Attributes = attributes;
+                }
+                return result;
+            }
+        }
+        else if (el1.DocumentType == DocumentType.Null)
+        {
+            result.DocumentType = el2.DocumentType;
+            result.AllowNull = true;
+            result.Attributes = el2.Attributes;
+            result.Element = el2.Element;
+            return result;
+        }
+        else if (el2.DocumentType == DocumentType.Null)
+        {
+            result.DocumentType = el1.DocumentType;
+            result.AllowNull = true;
+            result.Attributes = el1.Attributes;
+            result.Element = el1.Element;
+            return result;
+        }
+        else if (el1.DocumentType == el2.DocumentType)
+        {
+            result.DocumentType = el1.DocumentType;
+            result.AllowNull = el1.AllowNull == false && el2.AllowNull == false ? false : true;
+            result.Attributes = el1.Attributes;
+            result.Element = el1.Element;
+            return result;
+        }
+        else
+        {
+            throw new Exception("Unable to get compatible type!");
+        }
+    }
+
+    private SchemaElement GetArraySchema(DocumentArray array)
+    {
+        SchemaElement schema = new SchemaElement();
+        schema.DocumentType = DocumentType.Array;
+        SchemaElement? elementSchema = null;
+        foreach (var item in array)
+        {
+            if (elementSchema == null)
+            {
+                elementSchema = Parse(item);
+            }
+            else
+            {
+                // get compatible element
+                elementSchema = GetCompatibleSchema(elementSchema, Parse(item));
+                if (elementSchema is null)
+                {
+                    // not compatible
+                    break;
+                }
+            }
+        }
+        schema.Element = elementSchema;
+        return schema;
+    }
+
+    private SchemaElement GetDictSchema(DictionaryDocument dict)
+    {
+        short attributeId = 0;
+        List<SchemaAttribute> attributes = new List<SchemaAttribute>();
+        foreach (var key in dict.Keys.OrderBy(k => k))
+        {
+            attributeId++;
+            SchemaAttribute attr = new SchemaAttribute(attributeId, key, Parse(dict[key]));
+            attributes.Add(attr);
+        }
+        return new SchemaElement(DocumentType.Document, false, null, attributes);
+    }
+
+    /// <summary>
+    /// Generates a schema from parsing an existing document value.
+    /// </summary>
+    /// <param name="docValue">The document to generate the schema from.</param>
+    /// <returns>Returns a document schema by parsing the document.</returns>
+    public SchemaElement Parse(DocumentValue docValue)
+    {
+        if (docValue.Type == DocumentType.Null)
+        {
+            return new SchemaElement(DocumentType.Null, false, null, null);
+        }
+        else if (docValue.Type == DocumentType.Array)
+        {
+            return GetArraySchema(docValue.AsArray);
+        }
+        else if (docValue.Type == DocumentType.Document)
+        {
+            return GetDictSchema(docValue.AsDocument);
+        }
+        else
+        {
+            return new SchemaElement(docValue.Type, false, null, null);
+        }
     }
 }
