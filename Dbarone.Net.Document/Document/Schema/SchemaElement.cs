@@ -27,6 +27,9 @@ public class SchemaElement
     /// </summary>
     public IEnumerable<SchemaAttribute>? Attributes { get; set; } = null;
 
+    /// <summary>
+    /// Creates a new empty SchemaElement instance.
+    /// </summary>
     public SchemaElement()
     {
 
@@ -209,7 +212,7 @@ public class SchemaElement
             this.Element.DocumentType != DocumentType.Array && this.Element.DocumentType != DocumentType.Document;
     }
 
-    private SchemaElement? GetCompatibleSchema(SchemaElement? el1, SchemaElement? el2)
+    private static SchemaElement? GetCompatibleSchema(SchemaElement? el1, SchemaElement? el2)
     {
         SchemaElement result = new SchemaElement();
         if (el1 is null || el2 is null)
@@ -220,7 +223,7 @@ public class SchemaElement
         else if (el1.DocumentType == DocumentType.Null && el2.DocumentType == DocumentType.Null)
         {
             result.DocumentType = DocumentType.Null;
-            AllowNull = true;
+            result.AllowNull = true;
             return result;
         }
         else if (el1.DocumentType == DocumentType.Array && el2.DocumentType == DocumentType.Array)
@@ -321,7 +324,7 @@ public class SchemaElement
         }
     }
 
-    private SchemaElement GetArraySchema(DocumentArray array)
+    private static SchemaElement GetArraySchema(DocumentArray array)
     {
         SchemaElement schema = new SchemaElement();
         schema.DocumentType = DocumentType.Array;
@@ -347,7 +350,7 @@ public class SchemaElement
         return schema;
     }
 
-    private SchemaElement GetDictSchema(DictionaryDocument dict)
+    private static SchemaElement GetDictSchema(DictionaryDocument dict)
     {
         short attributeId = 0;
         List<SchemaAttribute> attributes = new List<SchemaAttribute>();
@@ -365,7 +368,7 @@ public class SchemaElement
     /// </summary>
     /// <param name="docValue">The document to generate the schema from.</param>
     /// <returns>Returns a document schema by parsing the document.</returns>
-    public SchemaElement Parse(DocumentValue docValue)
+    public static SchemaElement Parse(DocumentValue docValue)
     {
         if (docValue.Type == DocumentType.Null)
         {

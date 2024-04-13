@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Dbarone.Net.Document;
 
 public class SchemaTests
@@ -100,4 +101,41 @@ public class SchemaTests
         Assert.Equal(3, schema2.Attributes!.Count());
         Assert.Equal("c", schema2.Attributes!.First(a => a.AttributeId == 3).AttributeName);
     }
+
+    [Fact]
+    public void TestParse()
+    {
+        DocumentValue dv1 = (int)123;
+        SchemaElement schema = SchemaElement.Parse(dv1);
+        Assert.Equal(DocumentType.Int32, schema.DocumentType);
+        Assert.False(schema.AllowNull);
+    }
+
+    [Fact]
+    public void TestParseArray()
+    {
+        List<int> ints = new List<int>() { 1, 2, 3, 4, 5 };
+        DocumentArray array = new DocumentArray(ints.Select(a => (DocumentValue)a));
+        SchemaElement schema = SchemaElement.Parse(array);
+        Assert.Equal(DocumentType.Array, schema.DocumentType);
+        Assert.NotNull(schema.Element);
+        Assert.Equal(DocumentType.Int32, schema.Element!.DocumentType);
+        Assert.False(schema.AllowNull);
+    }
+
+    [Fact]
+    public void TestParseDict()
+    {
+        DictionaryDocument dict = new DictionaryDocument();
+        dict["foo"] = 123;
+        dict["bar"] = "test";
+        dict["baz"] = Guid.NewGuid();
+        SchemaElement schema = SchemaElement.Parse(dict);
+        Assert.Equal(DocumentType.Document, schema.DocumentType);
+        Assert.NotNull(schema.Attributes);
+        Assert.Equal(3, schema.Attributes!.Count());
+        // Attributes are order alpha-numerically. First is 'bar'.
+        Assert.Equal("bar", schema.Attributes!.First(a=>a.AttributeId==1).AttributeName);
+    }
+
 }
