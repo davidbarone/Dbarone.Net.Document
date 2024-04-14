@@ -176,3 +176,49 @@ TO DO
 CSV library
 byte compression - Huffman
 ColumnStore class - dictionary encoding / RLE / Huffman encoding / VarInt encoding
+
+
+ColumnStore
+
+Run Length Encoding
+Dictionary Encoding
+Huffman (string / byte) encoding
+Delta Encoding???
+
+
+Only write page once - when get to 1M 2^20 (1,048,576)
+No updates - but rows can be deleted? (logical delete)
+
+
+N Columns, split into M row groups
+
+each M row group = 2"^20 rows
+
+MEtadata
+- Location of all column metadata start locations
+
+Column Chunk = 1 column 2^20 rows = multiple pages
+
+https://parquet.apache.org/docs/file-format/
+Model: https://parquet.apache.org/docs/file-format/metadata/
+
+https://cloudsqale.com/2020/05/29/how-parquet-files-are-written-row-groups-pages-required-memory-and-flush-operations/
+
+Footer:
+- SChema (columns + types
+- all row group info (size, rows, min/max/null for each column)
+
+
+SQL Server
+----------
+https://sqlespresso.com/2019/06/26/understanding-columnstore-indexes-in-sql-server-part-1/#:~:text=Columnstore%20is%20simply%20the%20way%20the%20data%20is,columns%20and%20logically%20organized%20in%20rows%20and%20columns.
+
+Min row group 102400, max 1M
+COlumn segments
+
+Delta group = remainder of rows on b-tree index
+Delta store = multiple row groups
+
+Tuple-Mover Process = moves rows from delta store to columnstore index
+looks for delta groups > 1M rows (closed group)
+

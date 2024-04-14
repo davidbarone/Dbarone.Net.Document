@@ -4,6 +4,8 @@ namespace Dbarone.Net.Document;
 /// A data frame is a specialised type of document. It is bound to a schema, and represents
 /// a 2-dimensional tabular dataset where each row consists of 2 or more values, each being
 /// a simple data type (not a nested dictonary or array).
+/// The DataFrame uses a ColumnStore approach, and uses various encoding + compression
+/// techniques.
 /// </summary>
 public class DataFrame
 {
