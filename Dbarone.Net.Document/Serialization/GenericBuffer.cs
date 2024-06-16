@@ -64,7 +64,7 @@ public class GenericBuffer : IBuffer
     {
         get
         {
-            return this.Resizeable ? this.Stream.GetBuffer() : this.buffer ;
+            return this.Resizeable ? this.Stream.GetBuffer() : this.buffer;
         }
     }
 
@@ -335,14 +335,17 @@ public class GenericBuffer : IBuffer
         // BitConverter.GetBytes(Byte) treats the byte value as a ushort, so returns 2 bytes.
         // Section 6.1.2 of the C# language spec
         // Take 1st byte only.
-        var bytes = BitConverter.GetBytes(value).Take(1).ToArray();
+        var bytes = BitConverter.GetBytes((ushort)value).Take(1).ToArray();
         this.Stream.Write(bytes, 0, bytes.Length);
         return bytes.Length;
     }
 
     public int Write(sbyte value)
     {
-        var bytes = BitConverter.GetBytes(value);
+        // BitConverter.GetBytes(SByte) treats the sbyte value as a short, so returns 2 bytes.
+        // Section 6.1.2 of the C# language spec
+        // Take 1st byte only.
+        var bytes = BitConverter.GetBytes((short)value).Take(1).ToArray();
         this.Stream.Write(bytes, 0, bytes.Length);
         return bytes.Length;
     }
