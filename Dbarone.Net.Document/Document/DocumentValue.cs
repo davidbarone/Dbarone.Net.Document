@@ -278,7 +278,7 @@ namespace Dbarone.Net.Document
         public ulong AsUInt64 => Convert.ToUInt64(this.RawValue);
 
         public DateTime AsDateTime => (DateTime)this.RawValue;
-        
+
         public Single AsSingle => Convert.ToSingle(this.RawValue);
 
         public double AsDouble => Convert.ToDouble(this.RawValue);
@@ -347,8 +347,20 @@ namespace Dbarone.Net.Document
             return (Boolean)value.RawValue;
         }
 
+        // Boolean?
+        public static implicit operator Boolean?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (Boolean)value.RawValue;
+        }
+
         // Boolean
         public static implicit operator DocumentValue(Boolean value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // Boolean?
+        public static implicit operator DocumentValue(Boolean? value)
         {
             return new DocumentValue(value);
         }
@@ -359,8 +371,20 @@ namespace Dbarone.Net.Document
             return (Byte)value.RawValue;
         }
 
+        // Byte?
+        public static implicit operator Byte?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (Byte)value.RawValue;
+        }
+
         // Byte
         public static implicit operator DocumentValue(Byte value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // Byte?
+        public static implicit operator DocumentValue(Byte? value)
         {
             return new DocumentValue(value);
         }
@@ -371,8 +395,20 @@ namespace Dbarone.Net.Document
             return (SByte)value.RawValue;
         }
 
+        // SByte?
+        public static implicit operator SByte?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (SByte)value.RawValue;
+        }
+
         // SByte
         public static implicit operator DocumentValue(SByte value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // SByte?
+        public static implicit operator DocumentValue(SByte? value)
         {
             return new DocumentValue(value);
         }
@@ -383,8 +419,20 @@ namespace Dbarone.Net.Document
             return (Char)value.RawValue;
         }
 
+        // Char?
+        public static implicit operator Char?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (Char)value.RawValue;
+        }
+
         // Char
         public static implicit operator DocumentValue(Char value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // Char?
+        public static implicit operator DocumentValue(Char? value)
         {
             return new DocumentValue(value);
         }
@@ -395,8 +443,20 @@ namespace Dbarone.Net.Document
             return (Int16)value.RawValue;
         }
 
+        // Int16?
+        public static implicit operator Int16?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (Int16)value.RawValue;
+        }
+
         // Int16
         public static implicit operator DocumentValue(Int16 value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // Int16?
+        public static implicit operator DocumentValue(Int16? value)
         {
             return new DocumentValue(value);
         }
@@ -407,8 +467,20 @@ namespace Dbarone.Net.Document
             return (UInt16)value.RawValue;
         }
 
+        // UInt16?
+        public static implicit operator UInt16?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (UInt16)value.RawValue;
+        }
+
         // UInt16
         public static implicit operator DocumentValue(UInt16 value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // UInt16?
+        public static implicit operator DocumentValue(UInt16? value)
         {
             return new DocumentValue(value);
         }
@@ -419,8 +491,20 @@ namespace Dbarone.Net.Document
             return (Int32)value.RawValue;
         }
 
+        // Int32?
+        public static implicit operator Int32?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (Int32)value.RawValue;
+        }
+
         // Int32
         public static implicit operator DocumentValue(Int32 value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // Int32?
+        public static implicit operator DocumentValue(Int32? value)
         {
             return new DocumentValue(value);
         }
@@ -431,8 +515,20 @@ namespace Dbarone.Net.Document
             return (UInt32)value.RawValue;
         }
 
+        // UInt32?
+        public static implicit operator UInt32?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (UInt32)value.RawValue;
+        }
+
         // UInt32
         public static implicit operator DocumentValue(UInt32 value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // UInt32?
+        public static implicit operator DocumentValue(UInt32? value)
         {
             return new DocumentValue(value);
         }
@@ -443,8 +539,20 @@ namespace Dbarone.Net.Document
             return (Single)value.RawValue;
         }
 
+        // Single?
+        public static implicit operator Single?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (Single)value.RawValue;
+        }
+
         // Single
         public static implicit operator DocumentValue(Single value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // Single?
+        public static implicit operator DocumentValue(Single? value)
         {
             return new DocumentValue(value);
         }
@@ -455,8 +563,20 @@ namespace Dbarone.Net.Document
             return (Int64)value.RawValue;
         }
 
+        // Int64?
+        public static implicit operator Int64?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (Int64)value.RawValue;
+        }
+
         // Int64
         public static implicit operator DocumentValue(Int64 value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // Int64?
+        public static implicit operator DocumentValue(Int64? value)
         {
             return new DocumentValue(value);
         }
@@ -467,8 +587,20 @@ namespace Dbarone.Net.Document
             return (UInt64)value.RawValue;
         }
 
+        // UInt64?
+        public static implicit operator UInt64?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (UInt64)value.RawValue;
+        }
+
         // UInt64
         public static implicit operator DocumentValue(UInt64 value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // UInt64?
+        public static implicit operator DocumentValue(UInt64? value)
         {
             return new DocumentValue(value);
         }
@@ -479,8 +611,20 @@ namespace Dbarone.Net.Document
             return (DateTime)value.RawValue;
         }
 
+        // DateTime?
+        public static implicit operator DateTime?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (DateTime)value.RawValue;
+        }
+
         // DateTime
         public static implicit operator DocumentValue(DateTime value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // DateTime?
+        public static implicit operator DocumentValue(DateTime? value)
         {
             return new DocumentValue(value);
         }
@@ -491,8 +635,20 @@ namespace Dbarone.Net.Document
             return (Double)value.RawValue;
         }
 
+        // Double?
+        public static implicit operator Double?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (Double)value.RawValue;
+        }
+
         // Double
         public static implicit operator DocumentValue(Double value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // Double?
+        public static implicit operator DocumentValue(Double? value)
         {
             return new DocumentValue(value);
         }
@@ -503,8 +659,20 @@ namespace Dbarone.Net.Document
             return (Decimal)value.RawValue;
         }
 
+        // Decimal?
+        public static implicit operator Decimal?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (Decimal)value.RawValue;
+        }
+
         // Decimal
         public static implicit operator DocumentValue(Decimal value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // Decimal?
+        public static implicit operator DocumentValue(Decimal? value)
         {
             return new DocumentValue(value);
         }
@@ -515,8 +683,20 @@ namespace Dbarone.Net.Document
             return (Guid)value.RawValue;
         }
 
+        // Guid?
+        public static implicit operator Guid?(DocumentValue value)
+        {
+            return value.Type == DocumentType.Null ? null : (Guid)value.RawValue;
+        }
+
         // Guid
         public static implicit operator DocumentValue(Guid value)
+        {
+            return new DocumentValue(value);
+        }
+
+        // Guid?
+        public static implicit operator DocumentValue(Guid? value)
         {
             return new DocumentValue(value);
         }
