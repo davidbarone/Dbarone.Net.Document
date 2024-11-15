@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
 
     <PackageId>Dbarone.Net.Document</PackageId>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <Authors>David Barone</Authors>
     <Company>Dbarone.com</Company>
     <Description>A .NET object document format and serialisation library.</Description>
