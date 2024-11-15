@@ -6,7 +6,9 @@ namespace Dbarone.Net.Document.Tests;
 public class ColumnStoreTests
 {
 
-    [Fact]
+    /// <summary>
+    /// NOTE: TO DO: MUST DELETE THIS ONE AND REPLACE WITH AUTOGEN DATASET TO SAVE DISK SPACE.
+    /// </summary>
     public void TestAgeDataset()
     {
         // Use Age dataset:
